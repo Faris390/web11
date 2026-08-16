@@ -17,9 +17,9 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Home", href: "#home", active: true },
-    { name: "Events", href: "#home" },
-    { name: "Schedule", href: "#home" },
-    { name: "Gallery", href: "#home" },
+    { name: "Struktur Kelas", href: "#structure" },
+    { name: "Jadwal & Piket", href: "#schedule" },
+    { name: "Denah Duduk", href: "#seating" },
   ];
 
   return (

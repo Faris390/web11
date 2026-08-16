@@ -21,18 +21,7 @@ body {
   transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.cursor-glow {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(212, 163, 115, 0.3) 0%, rgba(212, 163, 115, 0) 70%);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: screen;
-  transition: opacity 0.3s ease, transform 0.15s ease-out;
-}
+
 
 .ambient-shadow {
   box-shadow: 0 0 40px rgba(212, 163, 115, 0.2);
@@ -177,4 +166,26 @@ body {
 
 .animate-logo-pulse {
   animation: logo-pulse 3s ease-in-out infinite;
+}
+
+/* Org Chart Custom Styling */
+.org-card {
+  @apply rounded-2xl p-4 sm:p-6 flex flex-col items-center text-center transition-all duration-300 cursor-pointer;
+  width: 100%;
+}
+
+.org-avatar {
+  @apply relative rounded-full overflow-hidden flex items-center justify-center font-bold mb-2.5 sm:mb-3;
+}
+
+.org-name {
+  @apply font-bold tracking-tight text-white;
+}
+
+.org-role {
+  @apply text-[10px] sm:text-xs font-mono font-semibold uppercase tracking-wider px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-white/5 border border-white/10;
+}
+
+.org-lines {
+  @apply relative w-full flex flex-col items-center pointer-events-none;
 }

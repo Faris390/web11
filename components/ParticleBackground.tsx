@@ -25,7 +25,6 @@ export default function ParticleBackground() {
   const [shootingStars, setShootingStars] = useState<ShootingStar[]>([]);
 
   useEffect(() => {
-    // Generate floating particles
     const pts: Particle[] = [];
     const count = window.innerWidth < 768 ? 30 : 55;
     for (let i = 0; i < count; i++) {
@@ -41,7 +40,6 @@ export default function ParticleBackground() {
     }
     setParticles(pts);
 
-    // Generate shooting stars
     const stars: ShootingStar[] = [];
     for (let i = 0; i < 4; i++) {
       stars.push({
@@ -57,7 +55,6 @@ export default function ParticleBackground() {
 
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
-      {/* Ambient aurora glow blobs */}
       <div
         className="absolute w-[500px] h-[500px] rounded-full opacity-20 dark:opacity-15 animate-aurora-1"
         style={{
@@ -77,7 +74,6 @@ export default function ParticleBackground() {
         }}
       />
 
-      {/* Floating particles */}
       {particles.map((p) => (
         <div
           key={p.id}
@@ -94,7 +90,6 @@ export default function ParticleBackground() {
         />
       ))}
 
-      {/* Shooting stars */}
       {shootingStars.map((s) => (
         <div
           key={s.id}

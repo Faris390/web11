@@ -255,7 +255,7 @@ export default function Schedule() {
       try {
         const response = await fetch("/api/schedule", {
           signal: controller.signal,
-          cache: "force-cache",
+          cache: "no-store",
         });
         const data = await response.json() as { schedule?: ScheduleRow[]; error?: string };
 

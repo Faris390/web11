@@ -26,20 +26,19 @@ export default function LoginPage() {
         setLoading(true);
 
         try {
-            const res = await fetch('http://192.25.205.38:5000/api/login', {
+            const res = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
             });
             const data = await res.json();
             if (res.ok && data.success) {
-                localStorage.setItem('token', data.token);
                 router.push('/lovyu');
             } else {
                 setError(data.message || 'Username atau password salah!');
             }
         } catch (err) {
-            setError('Gagal terhubung ke server backend. Pastikan server aktif.');
+            setError('Gagal terhubung ke layanan login.');
         } finally {
             setLoading(false);
         }

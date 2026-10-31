@@ -12,17 +12,23 @@ export default function AdminDashboard() {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [activeSection, setActiveSection] = useState<"overview" | "schedule" | "structure" | "seating">("overview");
+  const [role, setRole] = useState<string>("");
+  const [subjects, setSubjects] = useState<Array<{ id: string; name: string }>>([]);
+  const [assignment, setAssignment] = useState({ subjectId: "", title: "", type: "tugas", details: "", dueDate: "" });
+  const [assignmentMessage, setAssignmentMessage] = useState("");
+  const [savingAssignment, setSavingAssignment] = useState(false);
 
   useEffect(() => {
-    // Cek apakah ada token login
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      // Kalau gak ada token, tendang ke halaman login portal
+    fetch("/api/auth/me")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("unauthorized");
+        const data = await response.json();
+        setRole(data.role);
+        setIsAuthorized(true);
+      })
+      .catch(() => {
       router.push('/loginjir');
-    } else {
-      setIsAuthorized(true);
-    }
+      });
   }, [router]);
 
   useEffect(() => {
@@ -30,9 +36,36 @@ export default function AdminDashboard() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    router.push('/loginjir');
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/loginjir");
+  };
+
+  const loadSubjects = async () => {
+    const response = await fetch("/api/subjects");
+    const data = await response.json();
+    if (response.ok) setSubjects(data.subjects);
+  };
+
+  const saveAssignment = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setSavingAssignment(true);
+    setAssignmentMessage("");
+    try {
+      const response = await fetch("/api/assignments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(assignment),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Tugas gagal disimpan.");
+      setAssignment({ subjectId: "", title: "", type: "tugas", details: "", dueDate: "" });
+      setAssignmentMessage("Tugas berhasil disimpan.");
+    } catch (error) {
+      setAssignmentMessage(error instanceof Error ? error.message : "Tugas gagal disimpan.");
+    } finally {
+      setSavingAssignment(false);
+    }
   };
 
   // Tampilkan loading screen glassmorphism sebelum status auth selesai dicek
@@ -362,21 +395,36 @@ export default function AdminDashboard() {
           )}
 
           {activeSection === "schedule" && (
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
                   <span className="material-symbols-outlined text-amber-400">calendar_month</span>
                   Modul Manajemen Jadwal Pelajaran
                 </h3>
-                <span className="text-xs text-amber-300/80 font-mono">Modul Ready</span>
+                <span className="text-xs text-amber-300/80 font-mono">Akses: {role}</span>
               </div>
-              <p className="text-xs text-white/70">
-                Fitur pengelolaan jadwal pelajaran dan jadwal piket harian kelas XI-FARSENA.
-              </p>
-              <div className="p-4 rounded-xl bg-amber-400/10 border border-amber-400/20 text-xs text-amber-200 flex items-center gap-3">
-                <span className="material-symbols-outlined text-xl">info</span>
-                <span>Jadwal aktif ditampilkan secara dinamis di halaman depan berdasarkan hari saat ini.</span>
-              </div>
+              <p className="text-xs text-white/70">Tambahkan tugas yang akan tampil pada jadwal kelas.</p>
+              {subjects.length === 0 && (
+                <button onClick={loadSubjects} className="px-4 py-2 rounded-xl bg-amber-500/20 text-amber-200 border border-amber-400/30 text-xs font-bold">
+                  Muat Mata Pelajaran
+                </button>
+              )}
+              <form onSubmit={saveAssignment} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <select required value={assignment.subjectId} onChange={(e) => setAssignment({ ...assignment, subjectId: e.target.value })} className="bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white">
+                  <option value="">Pilih mata pelajaran</option>
+                  {subjects.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
+                </select>
+                <input required placeholder="Judul tugas" value={assignment.title} onChange={(e) => setAssignment({ ...assignment, title: e.target.value })} className="bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white placeholder-white/40" />
+                <select value={assignment.type} onChange={(e) => setAssignment({ ...assignment, type: e.target.value })} className="bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white">
+                  <option value="tugas">Tugas</option><option value="berkelompok">Berkelompok</option><option value="presentasi">Presentasi</option><option value="ulangan">Ulangan</option>
+                </select>
+                <input type="date" value={assignment.dueDate} onChange={(e) => setAssignment({ ...assignment, dueDate: e.target.value })} className="bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white" />
+                <textarea required placeholder="Detail tugas" value={assignment.details} onChange={(e) => setAssignment({ ...assignment, details: e.target.value })} className="md:col-span-2 min-h-28 bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white placeholder-white/40" />
+                <button type="submit" disabled={savingAssignment} className="md:col-span-2 py-3 rounded-xl bg-amber-500 text-black font-bold text-sm disabled:opacity-50">
+                  {savingAssignment ? "Menyimpan..." : "Simpan Tugas"}
+                </button>
+              </form>
+              {assignmentMessage && <p className="text-xs text-amber-200">{assignmentMessage}</p>}
             </div>
           )}
 

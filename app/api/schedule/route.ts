@@ -6,12 +6,9 @@ export const dynamic = "force-dynamic";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const dayParam = searchParams.get("day");
-  const requestedDay = dayParam === null ? new Date().getDay() : Number(dayParam);
-  const day = dayParam === null && (requestedDay < 1 || requestedDay > 5)
-    ? 1
-    : requestedDay;
+  const day = dayParam === null ? null : Number(dayParam);
 
-  if (day < 1 || day > 5) {
+  if (day !== null && (!Number.isInteger(day) || day < 1 || day > 5)) {
     return NextResponse.json({ error: "Parameter day harus bernilai 1 sampai 5." }, { status: 400 });
   }
 
@@ -23,7 +20,6 @@ export async function GET(request: Request) {
         se.day_of_week,
         se.start_time,
         se.end_time,
-        se.teacher,
         s.id AS subject_id,
         s.name AS subject,
         a.id AS assignment_id,
@@ -37,12 +33,15 @@ export async function GET(request: Request) {
         ON a.subject_id = s.id
         AND (a.schedule_entry_id IS NULL OR a.schedule_entry_id = se.id)
         AND (a.due_date IS NULL OR a.due_date >= CURRENT_DATE)
-      WHERE se.day_of_week = ${day}
+      WHERE (${day}::smallint IS NULL OR se.day_of_week = ${day})
         AND se.active = TRUE
       ORDER BY se.start_time ASC, a.due_date ASC NULLS LAST;
     `;
 
-    return NextResponse.json({ day, schedule: rows });
+    return NextResponse.json(
+      { day, schedule: rows },
+      { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" } }
+    );
   } catch (error) {
     console.error("Gagal mengambil jadwal dari Neon:", error);
     return NextResponse.json(

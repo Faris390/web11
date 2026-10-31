@@ -9,7 +9,7 @@ interface Task {
   subject: string;
   task: string;
   time: string;
-  teacher: string;
+  teacher?: string;
   type: TaskType;
 }
 
@@ -22,9 +22,9 @@ interface DaySchedule {
 
 interface ScheduleRow {
   id: string;
+  day_of_week: number;
   start_time: string;
   end_time: string;
-  teacher: string | null;
   subject: string;
   assignment_title: string | null;
   assignment_type: TaskType | null;
@@ -229,7 +229,7 @@ export default function Schedule() {
   const [selectedFilter, setSelectedFilter] = useState<TaskType | "all">("all");
   const [todayIndex, setTodayIndex] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [remoteTasks, setRemoteTasks] = useState<Task[]>([]);
+  const [remoteTasksByDay, setRemoteTasksByDay] = useState<Record<number, Task[]>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
@@ -253,8 +253,9 @@ export default function Schedule() {
       setLoadError(null);
 
       try {
-        const response = await fetch(`/api/schedule?day=${activeDay + 1}`, {
+        const response = await fetch("/api/schedule", {
           signal: controller.signal,
+          cache: "force-cache",
         });
         const data = await response.json() as { schedule?: ScheduleRow[]; error?: string };
 
@@ -262,20 +263,23 @@ export default function Schedule() {
           throw new Error(data.error || "Jadwal gagal dimuat.");
         }
 
-        setRemoteTasks((data.schedule || []).map((row) => ({
-          id: row.id,
-          subject: row.subject,
-          time: `${row.start_time.slice(0, 5)} - ${row.end_time.slice(0, 5)}`,
-          teacher: row.teacher || "Guru belum diatur",
-          task: row.assignment_title
-            ? `${row.assignment_title}${row.assignment_details ? ` — ${row.assignment_details}` : ""}`
-            : "Materi reguler - Tidak ada tugas",
-          type: row.assignment_type || "none",
-        })));
+        const tasksByDay: Record<number, Task[]> = {};
+        for (const row of data.schedule || []) {
+          (tasksByDay[row.day_of_week] ||= []).push({
+            id: row.id,
+            subject: row.subject,
+            time: `${row.start_time.slice(0, 5)} - ${row.end_time.slice(0, 5)}`,
+            task: row.assignment_title
+              ? `${row.assignment_title}${row.assignment_details ? ` — ${row.assignment_details}` : ""}`
+              : "Materi reguler - Tidak ada tugas",
+            type: row.assignment_type || "none",
+          });
+        }
+        setRemoteTasksByDay(tasksByDay);
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") return;
         setLoadError(error instanceof Error ? error.message : "Jadwal gagal dimuat.");
-        setRemoteTasks([]);
+        setRemoteTasksByDay({});
       } finally {
         if (!controller.signal.aborted) setIsLoading(false);
       }
@@ -283,7 +287,7 @@ export default function Schedule() {
 
     loadSchedule();
     return () => controller.abort();
-  }, [activeDay]);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -296,7 +300,7 @@ export default function Schedule() {
     return () => observer.disconnect();
   }, []);
 
-  const currentSchedule = { ...scheduleData[activeDay], tasks: remoteTasks };
+  const currentSchedule = { ...scheduleData[activeDay], tasks: remoteTasksByDay[activeDay + 1] || [] };
   const filteredTasks = selectedFilter === "all"
     ? currentSchedule.tasks
     : currentSchedule.tasks.filter((t) => t.type === selectedFilter);
@@ -472,13 +476,6 @@ export default function Schedule() {
                             {task.task}
                           </p>
 
-                          {/* Teacher name directly visible */}
-                          <div className="flex items-center gap-1.5 text-[11px] font-mono text-amber-300/90 mt-1">
-                            <span className="material-symbols-outlined text-xs text-amber-400">
-                              person
-                            </span>
-                            <span>{task.teacher}</span>
-                          </div>
                         </div>
                       </div>
 

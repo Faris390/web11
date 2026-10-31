@@ -20,6 +20,17 @@ interface DaySchedule {
   tasks: Task[];
 }
 
+interface ScheduleRow {
+  id: string;
+  start_time: string;
+  end_time: string;
+  teacher: string | null;
+  subject: string;
+  assignment_title: string | null;
+  assignment_type: TaskType | null;
+  assignment_details: string | null;
+}
+
 const scheduleData: DaySchedule[] = [
   {
     day: "Senin",
@@ -218,6 +229,9 @@ export default function Schedule() {
   const [selectedFilter, setSelectedFilter] = useState<TaskType | "all">("all");
   const [todayIndex, setTodayIndex] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [remoteTasks, setRemoteTasks] = useState<Task[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -232,6 +246,46 @@ export default function Schedule() {
   }, []);
 
   useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadSchedule() {
+      setIsLoading(true);
+      setLoadError(null);
+
+      try {
+        const response = await fetch(`/api/schedule?day=${activeDay + 1}`, {
+          signal: controller.signal,
+        });
+        const data = await response.json() as { schedule?: ScheduleRow[]; error?: string };
+
+        if (!response.ok) {
+          throw new Error(data.error || "Jadwal gagal dimuat.");
+        }
+
+        setRemoteTasks((data.schedule || []).map((row) => ({
+          id: row.id,
+          subject: row.subject,
+          time: `${row.start_time.slice(0, 5)} - ${row.end_time.slice(0, 5)}`,
+          teacher: row.teacher || "Guru belum diatur",
+          task: row.assignment_title
+            ? `${row.assignment_title}${row.assignment_details ? ` — ${row.assignment_details}` : ""}`
+            : "Materi reguler - Tidak ada tugas",
+          type: row.assignment_type || "none",
+        })));
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        setLoadError(error instanceof Error ? error.message : "Jadwal gagal dimuat.");
+        setRemoteTasks([]);
+      } finally {
+        if (!controller.signal.aborted) setIsLoading(false);
+      }
+    }
+
+    loadSchedule();
+    return () => controller.abort();
+  }, [activeDay]);
+
+  useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) setIsVisible(true);
@@ -242,7 +296,7 @@ export default function Schedule() {
     return () => observer.disconnect();
   }, []);
 
-  const currentSchedule = scheduleData[activeDay];
+  const currentSchedule = { ...scheduleData[activeDay], tasks: remoteTasks };
   const filteredTasks = selectedFilter === "all"
     ? currentSchedule.tasks
     : currentSchedule.tasks.filter((t) => t.type === selectedFilter);
@@ -360,7 +414,17 @@ export default function Schedule() {
             </div>
 
             {/* Tasks list */}
-            {currentSchedule.tasks.length === 0 ? (
+            {isLoading ? (
+              <div className="py-12 flex flex-col items-center justify-center gap-3 text-center">
+                <span className="material-symbols-outlined text-3xl text-amber-400 animate-spin">progress_activity</span>
+                <p className="text-xs font-mono text-white/50">Memuat jadwal dari Neon...</p>
+              </div>
+            ) : loadError ? (
+              <div className="py-12 flex flex-col items-center justify-center gap-3 text-center">
+                <span className="material-symbols-outlined text-3xl text-rose-400">error</span>
+                <p className="text-xs font-mono text-rose-300">{loadError}</p>
+              </div>
+            ) : currentSchedule.tasks.length === 0 ? (
               <div className="py-12 flex flex-col items-center justify-center gap-3 text-center">
                 <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
                   <span className="material-symbols-outlined text-3xl text-white/25">event_busy</span>

@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS schedule_entries (
   day_of_week SMALLINT NOT NULL CHECK (day_of_week BETWEEN 1 AND 5),
   start_time TIME NOT NULL,
   end_time TIME NOT NULL,
-  teacher TEXT NOT NULL,
+  teacher TEXT,
   active BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   CONSTRAINT schedule_entries_time_order CHECK (end_time > start_time)

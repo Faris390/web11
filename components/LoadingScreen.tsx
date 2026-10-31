@@ -4,138 +4,225 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 export default function LoadingScreen() {
-  const [progress, setProgress] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [shouldRender, setShouldRender] = useState(true);
+  // Phase: "loading" -> "bg-exit" -> "flying" -> "fading" -> "done"
+  const [phase, setPhase] = useState<"loading" | "bg-exit" | "flying" | "fading" | "done">("loading");
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
-    // Durasi loading dibuat lebih santai & halus
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        // Kenaikan persen lebih kecil (+4 sampai +11)
-        const next = prev + Math.floor(Math.random() * 8) + 4;
-        return next > 100 ? 100 : next;
-      });
-    }, 110); // Interval diperlambat jadi 110ms
+    // 1. Pada 1.8s: Background dan teks memudar, membuka layar Hero di belakangnya
+    const t1 = setTimeout(() => {
+      setPhase("bg-exit");
+      document.body.style.overflow = "";
+    }, 1800);
 
-    return () => clearInterval(interval);
+    // 2. Pada 2.0s: Logo meluncur naik menuju posisi persis Logo Hero
+    const t2 = setTimeout(() => {
+      setPhase("flying");
+    }, 2000);
+
+    // 3. Pada 2.7s: Logo telah sampai di posisi Hero Logo dan perlahan menghilang (fade out)
+    const t3 = setTimeout(() => {
+      setPhase("fading");
+    }, 2700);
+
+    // 4. Pada 3.2s: Hapus komponen dari DOM
+    const t4 = setTimeout(() => {
+      setPhase("done");
+    }, 3200);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
+    };
   }, []);
 
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
-    if (progress === 100) {
-      // 1. Tahan 400ms pas udah 100%, baru mulai memudar
-      const startFade = setTimeout(() => {
-        setIsLoading(false);
-        document.body.style.overflow = "";
-      }, 400);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
-      // 2. Transisi memudar berlangsung 1500ms (1.5 detik)
-      // Total waktu hapus dari DOM: 400ms (tahan) + 1500ms (fade) = 1900ms
-      const removeComponent = setTimeout(() => {
-        setShouldRender(false);
-      }, 1900);
+  if (phase === "done") return null;
 
-      return () => {
-        clearTimeout(startFade);
-        clearTimeout(removeComponent);
+  // Nilai posisi tujuan logo (Mobile vs Desktop)
+  const targetTop = isMobile ? "34.5vh" : "38.5vh";
+
+  // Style posisi & animasi logo berdasarkan fase
+  const getLogoStyle = (): React.CSSProperties => {
+    if (phase === "loading" || phase === "bg-exit") {
+      return {
+        position: "fixed",
+        top: "40%",
+        left: "50%",
+        transform: "translate(-50%, -50%) scale(1)",
+        opacity: 1,
+        transition: "none",
       };
     }
-  }, [progress]);
-
-  if (!shouldRender) return null;
+    if (phase === "flying") {
+      return {
+        position: "fixed",
+        top: targetTop,
+        left: "50%",
+        transform: "translate(-50%, -50%) scale(0.85)",
+        opacity: 1,
+        transition: "all 0.7s cubic-bezier(0.16, 1, 0.3, 1)",
+      };
+    }
+    // phase === "fading"
+    return {
+      position: "fixed",
+      top: targetTop,
+      left: "50%",
+      transform: "translate(-50%, -50%) scale(0.85)",
+      opacity: 0,
+      transition: "opacity 0.45s ease-out",
+    };
+  };
 
   return (
     <>
       <style jsx global>{`
-        @keyframes shockwave {
+        /* Scanlines Overlay */
+        .scanlines {
+          background: linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0),
+            rgba(255, 255, 255, 0) 50%,
+            rgba(0, 0, 0, 0.4) 50%,
+            rgba(0, 0, 0, 0.4)
+          );
+          background-size: 100% 4px;
+        }
+
+        /* Cyber Dot Noise Grid - Warm Amber Tint */
+        .cyber-grid {
+          background-image: 
+            radial-gradient(rgba(245, 158, 11, 0.15) 1px, transparent 1px),
+            linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+          background-size: 24px 24px, 48px 48px, 48px 48px;
+        }
+
+        /* Fade In & Slide Up Animation Teks */
+        @keyframes y2kFadeInUp {
           0% {
-            transform: scale(1);
-            opacity: 0.7;
-            border-width: 2px;
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
+            filter: blur(10px);
           }
           100% {
-            transform: scale(2.5);
-            opacity: 0;
-            border-width: 0.5px;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0px);
           }
         }
-        @keyframes eq-bounce {
-          0%, 100% {
-            height: 4px;
-          }
-          50% {
-            height: 18px;
-          }
+
+        /* Y2K 3D Text Shadow - High Contrast Warm Gold / Amber Offset Overlay */
+        .y2k-text-shadow {
+          text-shadow: 
+            3px 3px 0px #f59e0b,
+            6px 6px 0px #b45309,
+            0px 0px 30px rgba(245, 158, 11, 0.6);
+        }
+
+        /* Main Text Fill: Pure Solid White for Maximum Readability */
+        .text-white-main {
+          color: #ffffff;
+          -webkit-text-fill-color: #ffffff;
+          display: inline-block;
+        }
+
+        /* Spinning rings */
+        @keyframes spinCW {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes spinCCW {
+          from { transform: rotate(360deg); }
+          to { transform: rotate(0deg); }
         }
       `}</style>
 
+      {/* ═══ Layer 1: Background + Teks (Memudar lebih dulu) ═══ */}
       <div
-        className={`fixed inset-0 z-[99999] bg-[#0c0b09] flex flex-col items-center justify-center overflow-hidden transition-all duration-[1500ms] ease-in-out ${isLoading
-            ? "opacity-100 scale-100 blur-none"
-            : "opacity-0 scale-105 blur-xl pointer-events-none"
+        className={`fixed inset-0 z-[99998] bg-[#0d0714] flex flex-col items-center justify-center overflow-hidden select-none ${phase === "loading"
+          ? "opacity-100"
+          : "opacity-0 pointer-events-none"
           }`}
+        style={{ transition: "opacity 0.45s ease-in-out" }}
       >
-        <div className="absolute w-[400px] h-[400px] sm:w-[500px] sm:h-[500px] rounded-full bg-gradient-to-tr from-amber-600/15 via-primary/10 to-transparent blur-3xl pointer-events-none" />
+        {/* Cyber Dot Noise Grid */}
+        <div className="absolute inset-0 w-full h-full cyber-grid opacity-60 pointer-events-none z-0" />
 
-        <div className="relative flex items-center justify-center w-56 h-56 sm:w-64 sm:h-64">
-          <div className="absolute inset-0 rounded-full border-2 border-amber-500/20 border-t-amber-400 animate-spin [animation-duration:2.2s]" />
-          <div className="absolute inset-3 sm:inset-4 rounded-full border border-dashed border-amber-400/30 animate-spin [animation-duration:5.5s] [animation-direction:reverse]" />
-          <div
-            className="absolute inset-0 rounded-full border border-amber-500/80 pointer-events-none"
-            style={{ animation: "shockwave 2.5s ease-out infinite" }}
-          />
-          <div
-            className="absolute inset-0 rounded-full border border-amber-400/80 pointer-events-none"
-            style={{ animation: "shockwave 2.5s ease-out infinite 0.8s" }}
-          />
-          <div
-            className="absolute inset-0 rounded-full border border-yellow-300/80 pointer-events-none"
-            style={{ animation: "shockwave 2.5s ease-out infinite 1.6s" }}
-          />
+        {/* Scanlines Overlay */}
+        <div className="absolute inset-0 w-full h-full scanlines opacity-50 pointer-events-none z-[1]" />
 
-          <div className="absolute inset-4 rounded-full bg-gradient-to-tr from-amber-600/30 via-yellow-500/30 to-amber-200/20 blur-3xl animate-pulse pointer-events-none" />
+        {/* Glassmorphism / Backdrop Blur Layer */}
+        <div className="absolute inset-0 w-full h-full backdrop-blur-md bg-black/30 pointer-events-none z-[2]" />
 
-          <div className="relative z-10 p-5 rounded-full bg-black/60 border border-white/15 backdrop-blur-xl shadow-[0_0_35px_rgba(212,163,115,0.3)]">
-            <Image
-              src="/loading.png"
-              alt="XI-FARSENA Logo"
-              width={90}
-              height={90}
-              priority
-              className="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] animate-pulse [animation-duration:2s]"
-            />
-          </div>
+        {/* Radial Ambient Glow - Warm Gold / Amber */}
+        <div className="absolute w-[550px] h-[550px] rounded-full bg-gradient-to-tr from-amber-600/25 via-yellow-600/20 to-amber-400/20 blur-[110px] pointer-events-none z-[3] animate-pulse" />
+
+        {/* Teks FARSENA!2026 (Warna utama Putih, overlay bayangan 3D Amber) */}
+        <div
+          className="relative z-10 text-center px-4"
+          style={{
+            marginTop: "150px",
+            opacity: 0,
+            animation: "y2kFadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards",
+          }}
+        >
+          <h1 className="font-extrabold text-5xl sm:text-7xl md:text-8xl tracking-tight y2k-text-shadow flex items-center justify-center flex-wrap gap-x-2 font-['Syne'],sans-serif">
+            <span className="text-white-main">
+              FARSENA!
+            </span>
+            <span className="text-white-main">
+              2026
+            </span>
+          </h1>
         </div>
+      </div>
 
-        <div className="relative z-10 flex flex-col items-center gap-3 mt-8 w-60 sm:w-72">
-          <div className="flex items-baseline gap-1.5 font-display-lg text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-amber-200 via-amber-400 to-white bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]">
-            <span>{progress}</span>
-            <span className="text-lg font-mono text-amber-400">%</span>
+      {/* ═══ Layer 2: Logo Terbang ke Posisi Hero ═══ */}
+      <div className="z-[99999] pointer-events-none" style={getLogoStyle()}>
+        <div className="relative">
+          {/* Glow aura behind logo */}
+          <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-amber-500/30 via-yellow-500/20 to-amber-300/20 blur-2xl animate-pulse pointer-events-none" />
+
+          {/* Spinning dashed ring */}
+          <div
+            className="absolute -inset-3 rounded-full border border-dashed border-amber-400/40 pointer-events-none"
+            style={{ animation: "spinCCW 12s linear infinite" }}
+          />
+
+          {/* Outer spinning ring */}
+          <div
+            className="absolute -inset-5 rounded-full border border-amber-300/30 pointer-events-none"
+            style={{ animation: "spinCW 18s linear infinite" }}
+          />
+
+          {/* Round Logo Badge */}
+          <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full p-1 bg-gradient-to-tr from-amber-400 via-yellow-500 to-amber-200 shadow-[0_0_40px_rgba(212,163,115,0.6)]">
+            <div className="w-full h-full rounded-full overflow-hidden bg-black/80 flex items-center justify-center p-1">
+              <Image
+                src="/logo.jpeg"
+                alt="XI-FARSENA Logo"
+                width={140}
+                height={140}
+                priority
+                className="w-full h-full object-cover rounded-full drop-shadow-[0_0_12px_rgba(255,255,255,0.5)]"
+              />
+            </div>
           </div>
-
-          <span className="text-[11px] font-mono tracking-[0.3em] uppercase text-white/80 font-semibold">
-            XI-FARSENA | SMANDA
-          </span>
-          <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden p-[1px] border border-white/10">
-            <div
-              className="h-full bg-gradient-to-r from-amber-600 via-amber-400 to-white rounded-full transition-all duration-100 ease-out shadow-[0_0_10px_#f59e0b]"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center justify-center gap-1.5 h-5 mt-3">
-          <div className="w-1 bg-amber-400/80 rounded-full" style={{ animation: "eq-bounce 0.6s ease-in-out infinite" }} />
-          <div className="w-1 bg-yellow-300/80 rounded-full" style={{ animation: "eq-bounce 0.8s ease-in-out infinite 0.15s" }} />
-          <div className="w-1 bg-amber-500/80 rounded-full" style={{ animation: "eq-bounce 0.5s ease-in-out infinite 0.3s" }} />
-          <div className="w-1 bg-white/90 rounded-full" style={{ animation: "eq-bounce 0.7s ease-in-out infinite 0.1s" }} />
-          <div className="w-1 bg-amber-400/80 rounded-full" style={{ animation: "eq-bounce 0.6s ease-in-out infinite 0.2s" }} />
         </div>
       </div>
     </>

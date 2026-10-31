@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
-import ParticleBackground from "./ParticleBackground";
 
 const words = [
   "F1 Students!!",
@@ -57,34 +56,35 @@ export default function Hero() {
       id="home"
       className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden py-16 px-4"
     >
-      {/* 1. Hero Background Image */}
-      <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
-        <div
-          className="absolute inset-0 bg-cover bg-center scale-105 transition-all duration-700 opacity-90 dark:opacity-80"
-          style={{ backgroundImage: "url('/bg1.jpeg')" }}
+      {/* 1. Hero Dedicated Bright Wallpaper (bg1.jpeg) */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden transform-gpu">
+        <Image
+          src="/bg1.jpeg"
+          alt="Hero Background"
+          fill
+          priority
+          quality={85}
+          sizes="100vw"
+          className="object-cover object-center opacity-90 brightness-95 saturate-110 pointer-events-none transform-gpu"
         />
-        {/* Gradient vignette overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-surface/50 via-surface/20 to-surface/90 dark:from-black/60 dark:via-black/30 dark:to-black/85" />
-      </div>
-
-      {/* 2. Lightweight CSS Particle Background */}
-      <div className="absolute inset-0 w-full h-full pointer-events-none z-[1]">
-        <ParticleBackground />
+        {/* Soft Vignette Overlay for Crisp Readability & Seamless Transition to Body */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 via-70% to-[#12110e]" />
       </div>
 
       {/* 3. Main Hero Content with entrance animations */}
-      <div className="z-10 text-center flex flex-col items-center gap-5 max-w-4xl pt-16 pb-8 px-4 sm:px-10">
+      <div className="z-10 text-center flex flex-col items-center gap-5 max-w-4xl pt-16 pb-8 px-4 sm:px-10 transform-gpu">
         {/* Round Logo Above XI-FARSENA with Floating & Glow Animations */}
         <div
-          className={`relative transition-all duration-1000 ease-out ${mounted ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-75 -translate-y-8"
+          className={`relative transition-all duration-1000 ease-out transform-gpu ${mounted ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-75 -translate-y-8"
             }`}
         >
           {/* Glow aura behind logo */}
-          <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-amber-500/25 via-primary/20 to-amber-300/15 blur-2xl animate-pulse pointer-events-none" />
+          <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-amber-500/25 via-primary/20 to-amber-300/15 blur-xl sm:blur-2xl animate-pulse pointer-events-none transform-gpu" />
 
           {/* Circular Text SVG orbiting the logo */}
           <svg
-            className="absolute -inset-8 sm:-inset-10 w-[calc(100%+64px)] h-[calc(100%+64px)] sm:w-[calc(100%+80px)] sm:h-[calc(100%+80px)] animate-spin [animation-duration:18s] pointer-events-none"
+            className="absolute -inset-8 sm:-inset-10 w-[calc(100%+64px)] h-[calc(100%+64px)] sm:w-[calc(100%+80px)] sm:h-[calc(100%+80px)] pointer-events-none transform-gpu"
+            style={{ animation: "orbit-cw 18s linear infinite" }}
             viewBox="0 0 200 200"
           >
             <defs>
@@ -107,10 +107,13 @@ export default function Hero() {
           </svg>
 
           {/* Spinning Neon Ring Behind Logo */}
-          <div className="absolute -inset-2 rounded-full border border-dashed border-amber-400/30 animate-spin [animation-duration:12s] [animation-direction:reverse] pointer-events-none" />
+          <div
+            className="absolute -inset-2 rounded-full border border-dashed border-amber-400/30 pointer-events-none transform-gpu"
+            style={{ animation: "orbit-ccw 12s linear infinite" }}
+          />
 
           {/* Round Logo Badge */}
-          <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-tr from-amber-400 via-primary to-amber-200 shadow-[0_0_35px_rgba(212,163,115,0.5)] transition-transform duration-500 hover:scale-110">
+          <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-tr from-amber-400 via-primary to-amber-200 shadow-[0_0_35px_rgba(212,163,115,0.5)] transition-transform duration-500 hover:scale-110 transform-gpu">
             <div className="w-full h-full rounded-full overflow-hidden bg-black/80 flex items-center justify-center p-1">
               <Image
                 src="/logo.jpeg"

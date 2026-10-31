@@ -18,8 +18,8 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "X-Faskara | SMAN 1 Pandaan",
-  description: "Official class website for X-Faskara SMAN 1 Pandaan - Creative thinkers and future leaders.",
+  title: "XI-Farsena | SMAN 1 Pandaan",
+  description: "Official class website for XI-Farsena SMAN 1 Pandaan - Creative thinkers and future leaders.",
 };
 
 export default function RootLayout({

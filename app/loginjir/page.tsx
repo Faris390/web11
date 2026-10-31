@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import ParticleBackground from '@/components/ParticleBackground';
+
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
@@ -26,25 +26,20 @@ export default function LoginPage() {
         setLoading(true);
 
         try {
-            // Kirim data ke backend Express
-            const res = await fetch('http://192.168.0.196:5000/api/login', {
+            const res = await fetch('http://192.25.205.38:5000/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
             });
-
             const data = await res.json();
-
             if (res.ok && data.success) {
-                // Simpan token JWT di localStorage
                 localStorage.setItem('token', data.token);
-                // Lempar ke dashboard admin
                 router.push('/lovyu');
             } else {
-                setError(data.message || 'Login gagal! Periksa username dan password.');
+                setError(data.message || 'Username atau password salah!');
             }
         } catch (err) {
-            setError('Backend server belum jalan atau koneksi terputus!');
+            setError('Gagal terhubung ke server backend. Pastikan server aktif.');
         } finally {
             setLoading(false);
         }
@@ -52,19 +47,11 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen w-full bg-[#12110e] text-[#fcf9f0] relative overflow-hidden flex flex-col justify-between select-none">
-            {/* ── Background Image & Vignette ── */}
+            {/* ── Background Vignette Overlay (Shares fixed background from ShaderBackground) ── */}
             <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
-                <div
-                    className="absolute inset-0 bg-cover bg-center scale-105 transition-all duration-700 opacity-80"
-                    style={{ backgroundImage: "url('/bg1.jpeg')" }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-[#12110e]/60 to-[#12110e]" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-[#12110e]" />
             </div>
 
-            {/* ── Particle Background ── */}
-            <div className="absolute inset-0 w-full h-full pointer-events-none z-[1]">
-                <ParticleBackground />
-            </div>
 
             {/* ── Ambient Radial Glow Highlights ── */}
             <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-amber-500/20 via-yellow-600/10 to-transparent rounded-full blur-3xl pointer-events-none z-[2]" />
@@ -116,7 +103,8 @@ export default function LoginPage() {
 
                                 {/* Orbiting Text Ring SVG */}
                                 <svg
-                                    className="absolute -inset-6 w-[calc(100%+48px)] h-[calc(100%+48px)] animate-spin [animation-duration:18s] pointer-events-none"
+                                    className="absolute -inset-6 w-[calc(100%+48px)] h-[calc(100%+48px)] pointer-events-none"
+                                    style={{ animation: "orbit-cw 18s linear infinite" }}
                                     viewBox="0 0 200 200"
                                 >
                                     <defs>
@@ -139,7 +127,10 @@ export default function LoginPage() {
                                 </svg>
 
                                 {/* Dashed Orbit Line */}
-                                <div className="absolute -inset-1 rounded-full border border-dashed border-amber-400/40 animate-spin [animation-duration:12s] [animation-direction:reverse] pointer-events-none" />
+                                <div
+                                    className="absolute -inset-1 rounded-full border border-dashed border-amber-400/40 pointer-events-none"
+                                    style={{ animation: "orbit-ccw 12s linear infinite" }}
+                                />
 
                                 {/* Round Logo Image */}
                                 <div className="relative w-20 h-20 rounded-full p-0.5 bg-gradient-to-tr from-amber-400 via-yellow-500 to-amber-200 shadow-[0_0_25px_rgba(245,158,11,0.5)]">

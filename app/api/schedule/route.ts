@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -29,10 +31,15 @@ export async function GET(request: Request) {
         a.due_date
       FROM schedule_entries se
       INNER JOIN subjects s ON s.id = se.subject_id
-      LEFT JOIN assignments a
-        ON a.subject_id = s.id
-        AND (a.schedule_entry_id IS NULL OR a.schedule_entry_id = se.id)
-        AND (a.due_date IS NULL OR a.due_date >= CURRENT_DATE)
+      LEFT JOIN LATERAL (
+        SELECT a.id, a.title, a.type, a.details, a.due_date
+        FROM assignments a
+        WHERE a.subject_id = se.subject_id
+          AND (a.schedule_entry_id IS NULL OR a.schedule_entry_id = se.id)
+          AND (a.due_date IS NULL OR a.due_date >= CURRENT_DATE)
+        ORDER BY a.due_date ASC NULLS LAST, a.created_at DESC
+        LIMIT 1
+      ) a ON TRUE
       WHERE (${day}::smallint IS NULL OR se.day_of_week = ${day})
         AND se.active = TRUE
       ORDER BY se.start_time ASC, a.due_date ASC NULLS LAST;

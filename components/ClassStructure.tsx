@@ -148,11 +148,6 @@ export default function ClassStructure() {
       id="structure"
       className="py-16 sm:py-24 md:py-32 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto relative overflow-hidden"
     >
-      {/* ── Background Cosmic Glow Spheres ── */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-80 sm:w-[500px] h-80 sm:h-[500px] bg-amber-500/15 rounded-full blur-[110px] pointer-events-none animate-pulse [animation-duration:8s]" />
-      <div className="absolute bottom-20 left-4 sm:left-10 w-60 sm:w-80 h-60 sm:h-80 bg-purple-500/15 rounded-full blur-[95px] pointer-events-none animate-pulse [animation-duration:10s]" />
-      <div className="absolute bottom-20 right-4 sm:right-10 w-60 sm:w-80 h-60 sm:h-80 bg-sky-500/15 rounded-full blur-[95px] pointer-events-none animate-pulse [animation-duration:9s]" />
-
       <div className="flex flex-col items-center gap-8 sm:gap-12 relative z-10">
 
         {/* ── Section Header ── */}
@@ -160,7 +155,7 @@ export default function ClassStructure() {
           className={`text-center max-w-2xl px-2 transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400/20 via-purple-500/20 to-sky-400/20 border border-amber-400/30 text-amber-300 mb-3 sm:mb-4 shadow-[0_0_20px_rgba(245,158,11,0.25)] backdrop-blur-md">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 mb-3 sm:mb-4">
             <span className="material-symbols-outlined text-[16px] sm:text-[18px]">
               account_tree
             </span>
@@ -172,7 +167,7 @@ export default function ClassStructure() {
             Struktur Organisasi Kelas
           </h2>
           <p className="text-xs sm:text-sm text-white/70 max-w-lg mx-auto leading-relaxed">
-            Susunan kepengurusan kelas XI-F1 yang berdedikasi menciptakan ruang belajar yang solid, aktif, dan harmonis.
+            Pengurus kelas XI-F1 tahun ajaran 2026/2027.
           </p>
         </div>
 

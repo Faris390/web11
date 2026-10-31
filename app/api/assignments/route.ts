@@ -2,6 +2,25 @@ import { NextResponse } from "next/server";
 import { readSession } from "@/lib/auth";
 import { sql } from "@/lib/db";
 
+export async function GET() {
+  const session = readSession();
+  if (!session) return NextResponse.json({ error: "Tidak terautentikasi." }, { status: 401 });
+
+  try {
+    const assignments = await sql()`
+      SELECT a.id, s.name AS subject, a.title, a.type, a.details, a.due_date
+      FROM assignments a
+      INNER JOIN subjects s ON s.id = a.subject_id
+      ORDER BY a.due_date ASC NULLS LAST, a.created_at DESC
+      LIMIT 50
+    `;
+    return NextResponse.json({ assignments });
+  } catch (error) {
+    console.error("Gagal mengambil daftar tugas:", error);
+    return NextResponse.json({ error: "Daftar tugas gagal dimuat." }, { status: 500 });
+  }
+}
+
 export async function POST(request: Request) {
   const session = readSession();
   if (!session) return NextResponse.json({ error: "Tidak terautentikasi." }, { status: 401 });

@@ -11,12 +11,13 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [activeSection, setActiveSection] = useState<"overview" | "schedule" | "structure" | "seating">("overview");
+  const [activeSection, setActiveSection] = useState<"overview" | "schedule" | "structure" | "seating">("schedule");
   const [role, setRole] = useState<string>("");
   const [subjects, setSubjects] = useState<Array<{ id: string; name: string }>>([]);
   const [assignment, setAssignment] = useState({ subjectId: "", title: "", type: "tugas", details: "", dueDate: "" });
   const [assignmentMessage, setAssignmentMessage] = useState("");
   const [savingAssignment, setSavingAssignment] = useState(false);
+  const [assignments, setAssignments] = useState<Array<{ id: string; subject: string; title: string; type: string; details: string; due_date: string | null }>>([]);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -25,6 +26,8 @@ export default function AdminDashboard() {
         const data = await response.json();
         setRole(data.role);
         setIsAuthorized(true);
+        loadSubjects();
+        loadAssignments();
       })
       .catch(() => {
       router.push('/loginjir');
@@ -47,6 +50,12 @@ export default function AdminDashboard() {
     if (response.ok) setSubjects(data.subjects);
   };
 
+  const loadAssignments = async () => {
+    const response = await fetch("/api/assignments");
+    const data = await response.json();
+    if (response.ok) setAssignments(data.assignments);
+  };
+
   const saveAssignment = async (event: React.FormEvent) => {
     event.preventDefault();
     setSavingAssignment(true);
@@ -61,6 +70,7 @@ export default function AdminDashboard() {
       if (!response.ok) throw new Error(data.error || "Tugas gagal disimpan.");
       setAssignment({ subjectId: "", title: "", type: "tugas", details: "", dueDate: "" });
       setAssignmentMessage("Tugas berhasil disimpan.");
+      loadAssignments();
     } catch (error) {
       setAssignmentMessage(error instanceof Error ? error.message : "Tugas gagal disimpan.");
     } finally {
@@ -208,7 +218,7 @@ export default function AdminDashboard() {
             className={`text-base sm:text-lg text-white/80 max-w-xl transition-all duration-1000 ease-out delay-300 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               }`}
           >
-            Pusat Kontrol & Pengelolaan Informasi XI-Farsena.
+            Kelola informasi kelas dari satu tempat.
           </p>
 
           {/* Quick Action Navigation Buttons */}
@@ -241,7 +251,7 @@ export default function AdminDashboard() {
                 }`}
             >
               <span className="material-symbols-outlined text-[18px]">calendar_month</span>
-              <span>Kelola Jadwal</span>
+              <span>Tugas & Jadwal</span>
             </button>
 
             <button
@@ -396,35 +406,59 @@ export default function AdminDashboard() {
 
           {activeSection === "schedule" && (
             <div className="space-y-5">
-              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
                   <span className="material-symbols-outlined text-amber-400">calendar_month</span>
-                  Modul Manajemen Jadwal Pelajaran
+                  Tambah Tugas
                 </h3>
-                <span className="text-xs text-amber-300/80 font-mono">Akses: {role}</span>
+                <span className="shrink-0 px-2.5 py-1 rounded-full bg-amber-400/10 text-xs text-amber-200 border border-amber-400/20">
+                  {role === "rishyt" ? "Akses penuh" : "Pengurus kelas"}
+                </span>
               </div>
-              <p className="text-xs text-white/70">Tambahkan tugas yang akan tampil pada jadwal kelas.</p>
+              <p className="text-sm text-white/70">Isi form berikut. Tugas akan langsung muncul di jadwal kelas setelah disimpan.</p>
               {subjects.length === 0 && (
                 <button onClick={loadSubjects} className="px-4 py-2 rounded-xl bg-amber-500/20 text-amber-200 border border-amber-400/30 text-xs font-bold">
                   Muat Mata Pelajaran
                 </button>
               )}
               <form onSubmit={saveAssignment} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <select required value={assignment.subjectId} onChange={(e) => setAssignment({ ...assignment, subjectId: e.target.value })} className="bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white">
+                <label className="space-y-1.5 text-xs text-white/70">Mata pelajaran
+                <select required value={assignment.subjectId} onChange={(e) => setAssignment({ ...assignment, subjectId: e.target.value })} className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white">
                   <option value="">Pilih mata pelajaran</option>
                   {subjects.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
-                </select>
-                <input required placeholder="Judul tugas" value={assignment.title} onChange={(e) => setAssignment({ ...assignment, title: e.target.value })} className="bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white placeholder-white/40" />
-                <select value={assignment.type} onChange={(e) => setAssignment({ ...assignment, type: e.target.value })} className="bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white">
+                </select></label>
+                <label className="space-y-1.5 text-xs text-white/70">Judul tugas
+                <input required placeholder="Contoh: Latihan halaman 20" value={assignment.title} onChange={(e) => setAssignment({ ...assignment, title: e.target.value })} className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white placeholder-white/40" /></label>
+                <label className="space-y-1.5 text-xs text-white/70">Jenis tugas
+                <select value={assignment.type} onChange={(e) => setAssignment({ ...assignment, type: e.target.value })} className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white">
                   <option value="tugas">Tugas</option><option value="berkelompok">Berkelompok</option><option value="presentasi">Presentasi</option><option value="ulangan">Ulangan</option>
-                </select>
-                <input type="date" value={assignment.dueDate} onChange={(e) => setAssignment({ ...assignment, dueDate: e.target.value })} className="bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white" />
-                <textarea required placeholder="Detail tugas" value={assignment.details} onChange={(e) => setAssignment({ ...assignment, details: e.target.value })} className="md:col-span-2 min-h-28 bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white placeholder-white/40" />
+                </select></label>
+                <label className="space-y-1.5 text-xs text-white/70">Batas pengumpulan (opsional)
+                <input type="date" value={assignment.dueDate} onChange={(e) => setAssignment({ ...assignment, dueDate: e.target.value })} className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white" /></label>
+                <label className="md:col-span-2 space-y-1.5 text-xs text-white/70">Detail tugas
+                <textarea required placeholder="Tulis instruksi, halaman, atau keterangan tugas..." value={assignment.details} onChange={(e) => setAssignment({ ...assignment, details: e.target.value })} className="w-full md:col-span-2 min-h-28 bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white placeholder-white/40" /></label>
                 <button type="submit" disabled={savingAssignment} className="md:col-span-2 py-3 rounded-xl bg-amber-500 text-black font-bold text-sm disabled:opacity-50">
                   {savingAssignment ? "Menyimpan..." : "Simpan Tugas"}
                 </button>
               </form>
               {assignmentMessage && <p className="text-xs text-amber-200">{assignmentMessage}</p>}
+              <div className="pt-5 mt-2 border-t border-white/10">
+                <h4 className="font-bold text-white mb-3">Tugas tersimpan</h4>
+                {assignments.length === 0 ? <p className="text-xs text-white/50">Belum ada tugas yang ditambahkan.</p> : (
+                  <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+                    {assignments.map((item) => (
+                      <div key={item.id} className="p-3 rounded-xl bg-white/5 border border-white/10">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <span className="font-semibold text-sm text-white">{item.subject} · {item.title}</span>
+                          <span className="text-[10px] uppercase text-amber-200 bg-amber-400/10 border border-amber-400/20 rounded px-2 py-1">{item.type}</span>
+                        </div>
+                        <p className="text-xs text-white/60 mt-1">{item.details}</p>
+                        {item.due_date && <p className="text-[11px] text-white/40 mt-2">Batas: {item.due_date}</p>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           )}
 

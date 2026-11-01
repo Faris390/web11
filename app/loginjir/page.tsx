@@ -1,5 +1,6 @@
 'use client';
 
+import GlassButton from "@/components/GlassButton";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -204,7 +205,7 @@ export default function LoginPage() {
                                         required
                                         className="w-full bg-black/40 border border-white/15 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 text-white placeholder-white/35 rounded-xl pl-11 pr-11 py-3 text-sm transition-all duration-300 outline-none"
                                     />
-                                    <button
+                                    <GlassButton
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
                                         className="absolute right-3.5 text-white/40 hover:text-amber-300 transition-colors p-1 rounded-md"
@@ -213,12 +214,12 @@ export default function LoginPage() {
                                         <span className="material-symbols-outlined text-[20px]">
                                             {showPassword ? 'visibility_off' : 'visibility'}
                                         </span>
-                                    </button>
+                                    </GlassButton>
                                 </div>
                             </div>
 
                             {/* Submit Button */}
-                            <button
+                            <GlassButton
                                 type="submit"
                                 disabled={loading}
                                 className="w-full py-3.5 mt-2 rounded-xl text-sm font-extrabold text-black bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-amber-300 shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
@@ -238,7 +239,7 @@ export default function LoginPage() {
                                         </span>
                                     </>
                                 )}
-                            </button>
+                            </GlassButton>
                         </form>
 
                         {/* Card Footer Link */}

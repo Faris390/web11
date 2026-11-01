@@ -1,5 +1,6 @@
 "use client";
 
+import GlassButton from "@/components/GlassButton";
 import { useEffect, useRef, useState } from "react";
 
 type TaskType = "tugas" | "berkelompok" | "presentasi" | "ulangan" | "none";
@@ -347,7 +348,7 @@ export default function Schedule() {
               const isToday = todayIndex === index;
               const isActive = activeDay === index;
               return (
-                <button
+                <GlassButton
                   key={day.day}
                   onClick={() => setActiveDay(index)}
                   className={`relative px-3 sm:px-5 py-2 rounded-lg font-label-md text-xs sm:text-sm font-bold transition-all duration-200 flex items-center gap-1.5 ${isActive
@@ -361,14 +362,14 @@ export default function Schedule() {
                       Hari Ini
                     </span>
                   )}
-                </button>
+                </GlassButton>
               );
             })}
           </div>
 
           {/* Filter Pills */}
           <div className="flex flex-wrap justify-center gap-1.5">
-            <button
+            <GlassButton
               onClick={() => setSelectedFilter("all")}
               className={`px-2.5 py-1 rounded-md text-[11px] font-mono transition-all border ${selectedFilter === "all"
                   ? "bg-white/20 border-white/40 text-white font-bold"
@@ -376,12 +377,12 @@ export default function Schedule() {
                 }`}
             >
               Semua ({currentSchedule.tasks.length})
-            </button>
+            </GlassButton>
             {(Object.keys(typeConfig) as TaskType[]).map((key) => {
               const config = typeConfig[key];
               const count = currentSchedule.tasks.filter((t) => t.type === key).length;
               return (
-                <button
+                <GlassButton
                   key={key}
                   onClick={() => setSelectedFilter(key)}
                   className={`px-2.5 py-1 rounded-md text-[11px] font-mono transition-all border flex items-center gap-1 ${selectedFilter === key
@@ -391,7 +392,7 @@ export default function Schedule() {
                 >
                   <span className="material-symbols-outlined text-xs">{config.icon}</span>
                   <span>{config.label} ({count})</span>
-                </button>
+                </GlassButton>
               );
             })}
           </div>

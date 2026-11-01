@@ -1,5 +1,6 @@
 "use client";
 
+import GlassButton from "@/components/GlassButton";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import GridMotion from "@/components/GridMotion";
@@ -150,7 +151,7 @@ export default function Hero() {
             }`}
         >
           <div className="group relative inline-flex items-center justify-center p-2 cursor-pointer">
-            <button
+            <GlassButton
               onClick={() => {
                 const el = document.getElementById("schedule");
                 if (el) {
@@ -168,7 +169,7 @@ export default function Hero() {
               <span className="material-symbols-outlined text-[20px] transition-transform duration-300 group-hover:translate-y-1">
                 arrow_downward
               </span>
-            </button>
+            </GlassButton>
           </div>
         </div>
       </div>

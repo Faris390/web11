@@ -1,5 +1,6 @@
 "use client";
 
+import GlassButton from "@/components/GlassButton";
 import { useEffect, useState } from "react";
 
 export interface Student {
@@ -153,12 +154,12 @@ export default function SeatingChart() {
               className="w-full pl-9 pr-8 py-2 rounded-xl bg-black/50 border border-white/20 text-xs text-white placeholder-white/40 focus:outline-none focus:border-primary transition-all"
             />
             {searchQuery && (
-              <button
+              <GlassButton
                 onClick={() => setSearchQuery("")}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/50 hover:text-white text-xs"
               >
                 ✕
-              </button>
+              </GlassButton>
             )}
           </div>
 
@@ -166,33 +167,33 @@ export default function SeatingChart() {
           <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
             <span className="text-xs text-white/60 font-medium mr-1 hidden sm:inline">Filter:</span>
             <div className="flex items-center bg-black/50 p-1 rounded-xl border border-white/15 text-xs w-full sm:w-auto justify-between">
-              <button
+              <GlassButton
                 onClick={() => setFilterGender("all")}
                 className={`px-3 py-1.5 rounded-lg transition-all ${filterGender === "all" ? "bg-white/20 text-white font-semibold" : "text-white/60"
                   }`}
               >
                 Semua (36)
-              </button>
-              <button
+              </GlassButton>
+              <GlassButton
                 onClick={() => setFilterGender("L")}
                 className={`px-3 py-1.5 rounded-lg transition-all ${filterGender === "L" ? "bg-blue-500/30 text-blue-300 font-semibold" : "text-white/60"
                   }`}
               >
                 L (18)
-              </button>
-              <button
+              </GlassButton>
+              <GlassButton
                 onClick={() => setFilterGender("P")}
                 className={`px-3 py-1.5 rounded-lg transition-all ${filterGender === "P" ? "bg-pink-500/30 text-pink-300 font-semibold" : "text-white/60"
                   }`}
               >
                 P (18)
-              </button>
+              </GlassButton>
             </div>
           </div>
         </div>
 
         {/* Visual Seating Layout Container (Direct Mobile Visibility - Ultra Fast Solid GPU Colors) */}
-        <div className="bg-[#14120e] rounded-2xl md:rounded-3xl p-2 sm:p-5 md:p-8 border border-white/15 relative w-full shadow-2xl overflow-hidden">
+        <div className="glass-panel rounded-2xl md:rounded-3xl p-2 sm:p-5 md:p-8 border border-white/15 relative w-full shadow-2xl overflow-hidden">
           {/* Top Classroom Front: Whiteboard & Teacher Desk */}
           <div className="w-full flex flex-col items-center mb-4 sm:mb-6 md:mb-8 pb-3 md:pb-6 border-b border-white/10 relative">
             <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-white/40 mb-1 md:mb-2 font-bold">
@@ -288,13 +289,13 @@ export default function SeatingChart() {
       {/* Student Detail Modal */}
       {selectedStudent && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-[#1a1814] border border-white/20 rounded-3xl p-6 max-w-md w-full shadow-2xl relative">
-            <button
+          <div className="glass-panel border border-white/20 rounded-3xl p-6 max-w-md w-full shadow-2xl relative">
+            <GlassButton
               onClick={() => setSelectedStudent(null)}
               className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-sm transition-all"
             >
               ✕
-            </button>
+            </GlassButton>
 
             <div className="flex items-center gap-4 mb-6">
               <div
@@ -345,12 +346,12 @@ export default function SeatingChart() {
               </div>
             </div>
 
-            <button
+            <GlassButton
               onClick={() => setSelectedStudent(null)}
               className="mt-6 w-full py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-xs tracking-wider uppercase transition-all shadow-glow-gold"
             >
               Tutup Detail
-            </button>
+            </GlassButton>
           </div>
         </div>
       )}
@@ -433,7 +434,7 @@ interface SeatButtonProps {
 
 function SeatButton({ seatLabel, student, isMatched, isFiltered, onSelect }: SeatButtonProps) {
   return (
-    <button
+    <GlassButton
       onClick={() => onSelect(student)}
       className={`px-1.5 py-1 sm:p-1.5 md:p-2 rounded-md sm:rounded-lg border text-left flex items-center gap-1 sm:gap-1.5 transition-all relative overflow-hidden ${!isFiltered ? "opacity-25" : "opacity-100"
         } ${isMatched
@@ -455,6 +456,6 @@ function SeatButton({ seatLabel, student, isMatched, isFiltered, onSelect }: Sea
       <span className="text-[9px] sm:text-[10px] md:text-xs font-semibold leading-none text-white flex-1">
         {getNickname(student.name)}
       </span>
-    </button>
+    </GlassButton>
   );
 }

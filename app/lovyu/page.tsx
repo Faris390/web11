@@ -1,5 +1,6 @@
 "use client";
 
+import GlassButton from "@/components/GlassButton";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -204,13 +205,13 @@ export default function AdminDashboard() {
             <span className="material-symbols-outlined text-[16px]">home</span>
             <span className="hidden sm:inline">Halaman Utama</span>
           </Link>
-          <button
+          <GlassButton
             onClick={handleLogout}
             className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-red-500/20 border border-red-500/40 text-red-300 hover:bg-red-500/30 hover:border-red-400/60 transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <span className="material-symbols-outlined text-[16px]">logout</span>
             <span className="hidden sm:inline">Logout</span>
-          </button>
+          </GlassButton>
         </div>
       </nav>
 
@@ -304,7 +305,7 @@ export default function AdminDashboard() {
             className={`flex flex-wrap justify-center gap-3 mt-2 transition-all duration-1000 ease-out delay-500 ${mounted ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-6 scale-95"
               }`}
           >
-            <button
+            <GlassButton
               onClick={() => {
                 setActiveSection("schedule");
                 document.getElementById("dashboard-content")?.scrollIntoView({ behavior: "smooth" });
@@ -316,9 +317,9 @@ export default function AdminDashboard() {
             >
               <span className="material-symbols-outlined text-[18px]">calendar_month</span>
               <span>Tugas & Jadwal</span>
-            </button>
+            </GlassButton>
 
-            <button
+            <GlassButton
               onClick={() => {
                 setActiveSection("seating");
                 document.getElementById("dashboard-content")?.scrollIntoView({ behavior: "smooth" });
@@ -330,7 +331,7 @@ export default function AdminDashboard() {
             >
               <span className="material-symbols-outlined text-[18px]">chair</span>
               <span>Denah Duduk</span>
-            </button>
+            </GlassButton>
           </div>
         </div>
       </section>
@@ -411,12 +412,12 @@ export default function AdminDashboard() {
                   <p className="text-xs text-white/70 mb-4">
                     Jadwal Senin hingga Jumat telah terkonfigurasi lengkap dengan piket kebersihan kelas.
                   </p>
-                  <button
+                  <GlassButton
                     onClick={() => setActiveSection("schedule")}
                     className="w-full py-2 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold hover:bg-amber-500/30 transition-all"
                   >
                     Buka Pengaturan Jadwal
-                  </button>
+                  </GlassButton>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-400/40 transition-all">
@@ -427,12 +428,12 @@ export default function AdminDashboard() {
                   <p className="text-xs text-white/70 mb-4">
                     Susunan pengurus kelas (Pembina, Ketua, Wakil, Sekretaris & Bendahara) aktif.
                   </p>
-                  <button
+                  <GlassButton
                     onClick={() => setActiveSection("structure")}
                     className="w-full py-2 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-400/30 text-xs font-bold hover:bg-purple-500/30 transition-all"
                   >
                     Buka Pengaturan Pengurus
-                  </button>
+                  </GlassButton>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-sky-400/40 transition-all">
@@ -443,12 +444,12 @@ export default function AdminDashboard() {
                   <p className="text-xs text-white/70 mb-4">
                     Denah interaktif posisi duduk siswa kelas XI-FARSENA lengkap dengan pencarian nama.
                   </p>
-                  <button
+                  <GlassButton
                     onClick={() => setActiveSection("seating")}
                     className="w-full py-2 rounded-xl bg-sky-500/20 text-sky-300 border border-sky-400/30 text-xs font-bold hover:bg-sky-500/30 transition-all"
                   >
                     Buka Pengaturan Denah
-                  </button>
+                  </GlassButton>
                 </div>
               </div>
             </div>
@@ -467,9 +468,9 @@ export default function AdminDashboard() {
               </div>
               <p className="text-sm text-white/70">Isi form berikut. Tugas akan langsung muncul di jadwal kelas setelah disimpan.</p>
               {subjects.length === 0 && (
-                <button onClick={loadSubjects} className="px-4 py-2 rounded-xl bg-amber-500/20 text-amber-200 border border-amber-400/30 text-xs font-bold">
+                <GlassButton onClick={loadSubjects} className="px-4 py-2 rounded-xl bg-amber-500/20 text-amber-200 border border-amber-400/30 text-xs font-bold">
                   Muat Mata Pelajaran
-                </button>
+                </GlassButton>
               )}
               <form id="assignment-form" onSubmit={saveAssignment} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <label className="space-y-1.5 text-xs text-white/70">Mata pelajaran
@@ -487,16 +488,16 @@ export default function AdminDashboard() {
                 <input type="date" value={assignment.dueDate} onChange={(e) => setAssignment({ ...assignment, dueDate: e.target.value })} className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white" /></label>
                 <label className="md:col-span-2 space-y-1.5 text-xs text-white/70">Detail tugas
                 <textarea required placeholder="Tulis instruksi, halaman, atau keterangan tugas..." value={assignment.details} onChange={(e) => setAssignment({ ...assignment, details: e.target.value })} className="w-full md:col-span-2 min-h-28 bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white placeholder-white/40" /></label>
-                <button type="submit" disabled={savingAssignment} className="md:col-span-2 py-3 rounded-xl bg-amber-500 text-black font-bold text-sm disabled:opacity-50">
+                <GlassButton type="submit" disabled={savingAssignment} className="md:col-span-2 py-3 rounded-xl bg-amber-500 text-black font-bold text-sm disabled:opacity-50">
                   {savingAssignment ? "Menyimpan..." : editingAssignmentId ? "Simpan Perubahan" : "Simpan Tugas"}
-                </button>
+                </GlassButton>
                 {editingAssignmentId && (
-                  <button type="button" onClick={() => {
+                  <GlassButton type="button" onClick={() => {
                     setEditingAssignmentId(null);
                     setAssignment({ subjectId: "", title: "", type: "tugas", details: "", dueDate: "" });
                   }} className="md:col-span-2 py-2 rounded-xl border border-white/15 text-white/70 text-sm">
                     Batal Edit
-                  </button>
+                  </GlassButton>
                 )}
               </form>
               {assignmentMessage && <p className="text-xs text-amber-200">{assignmentMessage}</p>}
@@ -513,8 +514,8 @@ export default function AdminDashboard() {
                         <p className="text-xs text-white/60 mt-1">{item.details}</p>
                         {item.due_date && <p className="text-[11px] text-white/40 mt-2">Batas: {item.due_date}</p>}
                         <div className="flex gap-2 mt-3">
-                          <button type="button" onClick={() => startEditingAssignment(item)} className="px-3 py-1.5 rounded-lg bg-sky-400/10 border border-sky-400/25 text-xs text-sky-200">Edit</button>
-                          <button type="button" onClick={() => deleteAssignment(item.id)} className="px-3 py-1.5 rounded-lg bg-rose-400/10 border border-rose-400/25 text-xs text-rose-200">Hapus</button>
+                          <GlassButton type="button" onClick={() => startEditingAssignment(item)} className="px-3 py-1.5 rounded-lg bg-sky-400/10 border border-sky-400/25 text-xs text-sky-200">Edit</GlassButton>
+                          <GlassButton type="button" onClick={() => deleteAssignment(item.id)} className="px-3 py-1.5 rounded-lg bg-rose-400/10 border border-rose-400/25 text-xs text-rose-200">Hapus</GlassButton>
                         </div>
                       </div>
                     ))}
@@ -557,13 +558,13 @@ export default function AdminDashboard() {
                 <span className="material-symbols-outlined text-xl">event_seat</span>
                 <span>Acak posisi 18 pasangan bangku. Dua siswa dalam satu pasangan tetap bersama.</span>
               </div>
-              <button
+              <GlassButton
                 onClick={rollSeats}
                 disabled={rollingSeats}
                 className="w-full py-3 rounded-xl bg-sky-500 text-black font-bold text-sm disabled:opacity-50"
               >
                 {rollingSeats ? "Mengacak posisi..." : "Acak Posisi Bangku"}
-              </button>
+              </GlassButton>
               {seatingMessage && <p className="text-xs text-sky-200">{seatingMessage}</p>}
               <div className="space-y-4 pt-2">
                 {[
@@ -607,7 +608,7 @@ export default function AdminDashboard() {
                           {[1, 2, 3, 4, 5].map((row) => {
                             const checked = pair.allowedRows.includes(row);
                             return (
-                              <button
+                              <GlassButton
                                 type="button"
                                 key={row}
                                 aria-pressed={checked}
@@ -624,16 +625,16 @@ export default function AdminDashboard() {
                                 className={`cursor-pointer px-3 py-1.5 rounded-lg border text-xs ${checked ? "bg-sky-400/20 border-sky-300/50 text-sky-200" : "bg-white/5 border-white/10 text-white/50"}`}
                               >
                                 Baris {row}
-                              </button>
+                              </GlassButton>
                             );
                           })}
                         </div>
                       </div>
                     ))}
                   </div>
-                  <button onClick={saveSeatingPreferences} className="w-full mt-4 py-3 rounded-xl bg-purple-500 text-white font-bold text-sm">
+                  <GlassButton onClick={saveSeatingPreferences} className="w-full mt-4 py-3 rounded-xl bg-purple-500 text-white font-bold text-sm">
                     Simpan Aturan Baris
-                  </button>
+                  </GlassButton>
                 </div>
               )}
             </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import GlassButton from "@/components/GlassButton";
 import { useEffect, useState } from "react";
 
 export default function Navbar() {
@@ -58,7 +59,7 @@ export default function Navbar() {
         {/* Mobile controls */}
         <div className="flex items-center gap-2 md:hidden">
           {/* Mobile menu toggle */}
-          <button
+          <GlassButton
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="text-primary focus:outline-none p-1"
             aria-label="Toggle Navigation Menu"
@@ -66,7 +67,7 @@ export default function Navbar() {
             <span className="material-symbols-outlined text-[24px]">
               {mobileMenuOpen ? "close" : "menu"}
             </span>
-          </button>
+          </GlassButton>
         </div>
 
         {/* Mobile Drawer Menu using glass-panel */}

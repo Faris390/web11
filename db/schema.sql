@@ -40,3 +40,9 @@ CREATE TABLE IF NOT EXISTS seating_desks (
   student_b TEXT NOT NULL,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS seating_preferences (
+  pair_key TEXT PRIMARY KEY,
+  allowed_rows TEXT NOT NULL DEFAULT '1,2,3,4,5',
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

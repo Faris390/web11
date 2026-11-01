@@ -20,6 +20,8 @@ export default function AdminDashboard() {
   const [assignments, setAssignments] = useState<Array<{ id: string; subject: string; title: string; type: string; details: string; due_date: string | null }>>([]);
   const [rollingSeats, setRollingSeats] = useState(false);
   const [seatingMessage, setSeatingMessage] = useState("");
+  const [seatingStudents, setSeatingStudents] = useState<string[]>([]);
+  const [seatingPreferences, setSeatingPreferences] = useState<Array<{ pairKey: string; studentA: string; studentB: string; allowedRows: number[] }>>([]);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -30,6 +32,7 @@ export default function AdminDashboard() {
         setIsAuthorized(true);
         loadSubjects();
         loadAssignments();
+        loadSeating();
       })
       .catch(() => {
       router.push('/loginjir');
@@ -87,12 +90,39 @@ export default function AdminDashboard() {
       const response = await fetch("/api/seating", { method: "POST" });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Pengacakan gagal.");
+      setSeatingStudents(data.students || []);
       setSeatingMessage("Posisi pasangan berhasil diacak.");
     } catch (error) {
       setSeatingMessage(error instanceof Error ? error.message : "Pengacakan gagal.");
     } finally {
       setRollingSeats(false);
     }
+  };
+
+  const loadSeating = async () => {
+    const response = await fetch("/api/seating", { cache: "no-store" });
+    const data = await response.json();
+    if (response.ok) setSeatingStudents(data.students || []);
+  };
+
+  useEffect(() => {
+    if (role !== "rishyt") return;
+    fetch("/api/seating/preferences")
+      .then(async (response) => {
+        const data = await response.json();
+        if (response.ok) setSeatingPreferences(data.pairs || []);
+      })
+      .catch(() => undefined);
+  }, [role]);
+
+  const saveSeatingPreferences = async () => {
+    const response = await fetch("/api/seating/preferences", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pairs: seatingPreferences }),
+    });
+    const data = await response.json();
+    setSeatingMessage(response.ok ? "Aturan kemungkinan berhasil disimpan." : (data.error || "Aturan gagal disimpan."));
   };
 
   // Tampilkan loading screen glassmorphism sebelum status auth selesai dicek
@@ -522,6 +552,49 @@ export default function AdminDashboard() {
                 {rollingSeats ? "Mengacak posisi..." : "Acak Posisi Bangku"}
               </button>
               {seatingMessage && <p className="text-xs text-sky-200">{seatingMessage}</p>}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 pt-2">
+                {Array.from({ length: 18 }, (_, index) => (
+                  <div key={index} className="rounded-xl bg-black/30 border border-white/10 p-3">
+                    <p className="text-[10px] uppercase tracking-wider text-sky-300 mb-2">Meja {index + 1}</p>
+                    <p className="text-sm text-white font-semibold">{seatingStudents[index * 2] || "—"}</p>
+                    <p className="text-sm text-white/70">{seatingStudents[index * 2 + 1] || "—"}</p>
+                  </div>
+                ))}
+              </div>
+              {role === "rishyt" && (
+                <div className="mt-5 pt-5 border-t border-white/10">
+                  <h4 className="font-bold text-white">Atur kemungkinan baris</h4>
+                  <p className="text-xs text-white/60 mt-1 mb-3">Pilih baris yang boleh ditempati setiap pasangan saat diacak.</p>
+                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                    {seatingPreferences.map((pair, index) => (
+                      <div key={pair.pairKey} className="rounded-xl bg-black/30 border border-white/10 p-3">
+                        <p className="text-sm text-white font-semibold mb-2">{pair.studentA} &amp; {pair.studentB}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {[1, 2, 3, 4, 5].map((row) => {
+                            const checked = pair.allowedRows.includes(row);
+                            return (
+                              <label key={row} className={`cursor-pointer px-3 py-1.5 rounded-lg border text-xs ${checked ? "bg-sky-400/20 border-sky-300/50 text-sky-200" : "bg-white/5 border-white/10 text-white/50"}`}>
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  onChange={() => setSeatingPreferences((current) => current.map((item, itemIndex) => itemIndex === index
+                                    ? { ...item, allowedRows: checked ? item.allowedRows.filter((value) => value !== row) : [...item.allowedRows, row].sort() }
+                                    : item))}
+                                  className="sr-only"
+                                />
+                                Baris {row}
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <button onClick={saveSeatingPreferences} className="w-full mt-4 py-3 rounded-xl bg-purple-500 text-white font-bold text-sm">
+                    Simpan Aturan Baris
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

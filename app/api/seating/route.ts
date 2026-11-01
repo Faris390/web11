@@ -5,17 +5,15 @@ import { sql } from "@/lib/db";
 export async function GET() {
   try {
     const rows = await sql()`
-      SELECT student_a, student_b
+      SELECT desk_num, student_a, student_b
       FROM seating_desks
       ORDER BY desk_num
     `;
-    const deskOrder = [1, 5, 10, 15, 2, 6, 11, 16, 3, 7, 12, 17, 4, 8, 13, 18, 9, 14];
-    const byDesk = new Map(rows.map((row) => [row.desk_num, row]));
     return NextResponse.json({
-      students: deskOrder.flatMap((deskNum) => {
-        const row = byDesk.get(deskNum);
-        return row ? [row.student_a, row.student_b] : [];
-      }),
+      // Selalu kirim urutan nomor meja 1 sampai 18.
+      // Komponen visual memetakan nomor meja ke barisnya sendiri.
+      students: rows.flatMap((row) => [row.student_a, row.student_b]),
+      desks: rows,
     }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("Gagal mengambil denah duduk:", error);
@@ -85,6 +83,14 @@ export async function POST() {
       students: desks.flatMap((desk) => {
         const pair = assigned.get(desk.desk_num);
         return pair ? [pair.student_a, pair.student_b] : [];
+      }),
+      desks: desks.map((desk) => {
+        const pair = assigned.get(desk.desk_num);
+        return {
+          desk_num: desk.desk_num,
+          student_a: pair?.student_a,
+          student_b: pair?.student_b,
+        };
       }),
     });
   } catch (error) {

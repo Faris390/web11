@@ -9,8 +9,13 @@ export async function GET() {
       FROM seating_desks
       ORDER BY desk_num
     `;
+    const deskOrder = [1, 5, 10, 15, 2, 6, 11, 16, 3, 7, 12, 17, 4, 8, 13, 18, 9, 14];
+    const byDesk = new Map(rows.map((row) => [row.desk_num, row]));
     return NextResponse.json({
-      students: rows.flatMap((row) => [row.student_a, row.student_b]),
+      students: deskOrder.flatMap((deskNum) => {
+        const row = byDesk.get(deskNum);
+        return row ? [row.student_a, row.student_b] : [];
+      }),
     }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("Gagal mengambil denah duduk:", error);
@@ -34,10 +39,16 @@ export async function POST() {
 
     const preferences = await sql()`SELECT pair_key, allowed_rows FROM seating_preferences`;
     const allowed = new Map(preferences.map((item) => [item.pair_key, String(item.allowed_rows).split(",").map(Number)]));
-    const slots = Array.from({ length: 18 }, (_, index) => ({
-      index,
-      row: index < 16 ? Math.floor(index / 4) + 1 : 5,
-    }));
+    const deskRows = [
+      [1, 5, 10, 15],
+      [2, 6, 11, 16],
+      [3, 7, 12, 17],
+      [4, 8, 13, 18],
+      [9, 14],
+    ];
+    const slots = deskRows.flatMap((deskNumbers, rowIndex) =>
+      deskNumbers.map((deskNum) => ({ deskNum, row: rowIndex + 1 }))
+    );
     const pairs = [...desks].sort(() => Math.random() - 0.5).sort((a, b) => {
       const getSize = (pair: typeof a) => {
         const key = [pair.student_a, pair.student_b].sort().join("|");
@@ -45,7 +56,7 @@ export async function POST() {
       };
       return getSize(a) - getSize(b);
     });
-    const assigned: Array<typeof pairs[number] | undefined> = Array(18);
+    const assigned = new Map<number, typeof pairs[number]>();
     const placePair = (pairIndex: number, availableSlots: typeof slots): boolean => {
       if (pairIndex === pairs.length) return true;
       const pair = pairs[pairIndex];
@@ -53,24 +64,28 @@ export async function POST() {
       const permittedRows = allowed.get(pairKey) || [1, 2, 3, 4, 5];
       const choices = availableSlots.filter((slot) => permittedRows.includes(slot.row)).sort(() => Math.random() - 0.5);
       for (const choice of choices) {
-        assigned[choice.index] = pair;
-        if (placePair(pairIndex + 1, availableSlots.filter((slot) => slot.index !== choice.index))) return true;
+        assigned.set(choice.deskNum, pair);
+        if (placePair(pairIndex + 1, availableSlots.filter((slot) => slot.deskNum !== choice.deskNum))) return true;
+        assigned.delete(choice.deskNum);
       }
-      assigned[choices[0]?.index ?? 0] = undefined;
       return false;
     };
     if (!placePair(0, slots)) return NextResponse.json({ error: "Aturan baris tidak memiliki kombinasi yang memungkinkan." }, { status: 409 });
-    const orderedPairs = assigned as typeof pairs;
-    for (let index = 0; index < desks.length; index += 1) {
+    for (const desk of desks) {
+      const pair = assigned.get(desk.desk_num);
+      if (!pair) return NextResponse.json({ error: "Gagal menyusun posisi pasangan." }, { status: 500 });
       await sql()`
-        UPDATE seating_desks SET student_a = ${orderedPairs[index].student_a}, student_b = ${orderedPairs[index].student_b},
+        UPDATE seating_desks SET student_a = ${pair.student_a}, student_b = ${pair.student_b},
             updated_at = NOW()
-        WHERE desk_num = ${desks[index].desk_num}
+        WHERE desk_num = ${desk.desk_num}
       `;
     }
 
     return NextResponse.json({
-      students: orderedPairs.flatMap((pair) => [pair.student_a, pair.student_b]),
+      students: desks.flatMap((desk) => {
+        const pair = assigned.get(desk.desk_num);
+        return pair ? [pair.student_a, pair.student_b] : [];
+      }),
     });
   } catch (error) {
     console.error("Gagal mengacak denah duduk:", error);

@@ -573,17 +573,18 @@ export default function AdminDashboard() {
                           {[1, 2, 3, 4, 5].map((row) => {
                             const checked = pair.allowedRows.includes(row);
                             return (
-                              <label key={row} className={`cursor-pointer px-3 py-1.5 rounded-lg border text-xs ${checked ? "bg-sky-400/20 border-sky-300/50 text-sky-200" : "bg-white/5 border-white/10 text-white/50"}`}>
-                                <input
-                                  type="checkbox"
-                                  checked={checked}
-                                  onChange={() => setSeatingPreferences((current) => current.map((item, itemIndex) => itemIndex === index
-                                    ? { ...item, allowedRows: checked ? item.allowedRows.filter((value) => value !== row) : [...item.allowedRows, row].sort() }
-                                    : item))}
-                                  className="sr-only"
-                                />
+                              <button
+                                type="button"
+                                key={row}
+                                aria-pressed={checked}
+                                onMouseDown={(event) => event.preventDefault()}
+                                onClick={() => setSeatingPreferences((current) => current.map((item, itemIndex) => itemIndex === index
+                                  ? { ...item, allowedRows: checked ? item.allowedRows.filter((value) => value !== row) : [...item.allowedRows, row].sort() }
+                                  : item))}
+                                className={`cursor-pointer px-3 py-1.5 rounded-lg border text-xs ${checked ? "bg-sky-400/20 border-sky-300/50 text-sky-200" : "bg-white/5 border-white/10 text-white/50"}`}
+                              >
                                 Baris {row}
-                              </label>
+                              </button>
                             );
                           })}
                         </div>

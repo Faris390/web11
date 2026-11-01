@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface Student {
   id: number;
@@ -56,9 +56,25 @@ const getNickname = (fullName: string): string => {
 };
 
 export default function SeatingChart() {
+  const [students, setStudents] = useState<Student[]>(ALL_STUDENTS);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [filterGender, setFilterGender] = useState<"all" | "L" | "P">("all");
+
+  useEffect(() => {
+    fetch("/api/seating", { cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) return;
+        const data = await response.json() as { students?: string[] };
+        if (!data.students || data.students.length !== ALL_STUDENTS.length) return;
+        const studentsByName = new Map(ALL_STUDENTS.map((student) => [student.name, student]));
+        const arranged = data.students
+          .map((name) => studentsByName.get(name))
+          .filter((student): student is Student => Boolean(student));
+        if (arranged.length === ALL_STUDENTS.length) setStudents(arranged);
+      })
+      .catch(() => undefined);
+  }, []);
 
   const isStudentHighlighted = (student: Student): boolean => {
     if (!searchQuery.trim()) return false;
@@ -195,7 +211,7 @@ export default function SeatingChart() {
             <div className="mt-2 sm:mt-4">
               <div className="px-3 sm:px-5 py-1 sm:py-1.5 rounded-lg bg-amber-950 border border-amber-600/50 text-amber-200 text-[9px] sm:text-xs font-semibold flex items-center gap-1 shadow-sm">
                 <span className="material-symbols-outlined text-[13px] sm:text-[16px]">co_present</span>
-                Guru • Alit
+                Guru
               </div>
             </div>
           </div>
@@ -225,7 +241,7 @@ export default function SeatingChart() {
                         key={desk.deskNum}
                         deskNum={desk.deskNum}
                         seatIndices={desk.seats}
-                        students={ALL_STUDENTS}
+                        students={students}
                         onSelectStudent={(st) => setSelectedStudent(st)}
                         isStudentHighlighted={isStudentHighlighted}
                         isStudentFiltered={isStudentFiltered}
@@ -247,7 +263,7 @@ export default function SeatingChart() {
                         <DeskCard
                           deskNum={desk.deskNum}
                           seatIndices={desk.seats}
-                          students={ALL_STUDENTS}
+                          students={students}
                           onSelectStudent={(st) => setSelectedStudent(st)}
                           isStudentHighlighted={isStudentHighlighted}
                           isStudentFiltered={isStudentFiltered}

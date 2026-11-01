@@ -33,3 +33,10 @@ CREATE INDEX IF NOT EXISTS schedule_entries_day_idx
 
 CREATE INDEX IF NOT EXISTS assignments_subject_due_date_idx
   ON assignments (subject_id, due_date);
+
+CREATE TABLE IF NOT EXISTS seating_desks (
+  desk_num SMALLINT PRIMARY KEY CHECK (desk_num BETWEEN 1 AND 18),
+  student_a TEXT NOT NULL,
+  student_b TEXT NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

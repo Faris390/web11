@@ -18,6 +18,8 @@ export default function AdminDashboard() {
   const [assignmentMessage, setAssignmentMessage] = useState("");
   const [savingAssignment, setSavingAssignment] = useState(false);
   const [assignments, setAssignments] = useState<Array<{ id: string; subject: string; title: string; type: string; details: string; due_date: string | null }>>([]);
+  const [rollingSeats, setRollingSeats] = useState(false);
+  const [seatingMessage, setSeatingMessage] = useState("");
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -75,6 +77,21 @@ export default function AdminDashboard() {
       setAssignmentMessage(error instanceof Error ? error.message : "Tugas gagal disimpan.");
     } finally {
       setSavingAssignment(false);
+    }
+  };
+
+  const rollSeats = async () => {
+    setRollingSeats(true);
+    setSeatingMessage("");
+    try {
+      const response = await fetch("/api/seating", { method: "POST" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Pengacakan gagal.");
+      setSeatingMessage("Posisi pasangan berhasil diacak.");
+    } catch (error) {
+      setSeatingMessage(error instanceof Error ? error.message : "Pengacakan gagal.");
+    } finally {
+      setRollingSeats(false);
     }
   };
 
@@ -495,8 +512,16 @@ export default function AdminDashboard() {
               </p>
               <div className="p-4 rounded-xl bg-sky-400/10 border border-sky-400/20 text-xs text-sky-200 flex items-center gap-3">
                 <span className="material-symbols-outlined text-xl">event_seat</span>
-                <span>Posisi meja terdistribusi rapi dalam bentuk 2 kolom meja ganda.</span>
+                <span>Acak posisi 18 pasangan bangku. Dua siswa dalam satu pasangan tetap bersama.</span>
               </div>
+              <button
+                onClick={rollSeats}
+                disabled={rollingSeats}
+                className="w-full py-3 rounded-xl bg-sky-500 text-black font-bold text-sm disabled:opacity-50"
+              >
+                {rollingSeats ? "Mengacak posisi..." : "Acak Posisi Bangku"}
+              </button>
+              {seatingMessage && <p className="text-xs text-sky-200">{seatingMessage}</p>}
             </div>
           )}
         </div>

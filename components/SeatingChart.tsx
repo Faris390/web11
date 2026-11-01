@@ -12,42 +12,42 @@ export interface Student {
 }
 
 const ALL_STUDENTS: Student[] = [
-  { id: 1, absentNo: 1, name: "Achmad Fauzi", gender: "L", piketDay: "Senin", role: "Ketua Kelas" },
-  { id: 2, absentNo: 2, name: "Adinda Putri", gender: "P", piketDay: "Senin", role: "Wakil Ketua" },
-  { id: 3, absentNo: 3, name: "Aditya Pratama", gender: "L", piketDay: "Selasa" },
-  { id: 4, absentNo: 4, name: "Aisyah Azzahra", gender: "P", piketDay: "Selasa", role: "Sekretaris I" },
-  { id: 5, absentNo: 5, name: "Alfi Syahrin", gender: "L", piketDay: "Rabu" },
-  { id: 6, absentNo: 6, name: "Amanda Severina", gender: "P", piketDay: "Rabu", role: "Bendahara I" },
-  { id: 7, absentNo: 7, name: "Andi Pratama", gender: "L", piketDay: "Kamis" },
-  { id: 8, absentNo: 8, name: "Anisa Rahma", gender: "P", piketDay: "Kamis" },
-  { id: 9, absentNo: 9, name: "Bagas Saputra", gender: "L", piketDay: "Jumat" },
-  { id: 10, absentNo: 10, name: "Bunga Citra", gender: "P", piketDay: "Jumat" },
-  { id: 11, absentNo: 11, name: "Daniel Wijaya", gender: "L", piketDay: "Senin" },
-  { id: 12, absentNo: 12, name: "Dian Sastro", gender: "P", piketDay: "Senin" },
-  { id: 13, absentNo: 13, name: "Eko Prasetyo", gender: "L", piketDay: "Selasa" },
-  { id: 14, absentNo: 14, name: "Fani Nurul", gender: "P", piketDay: "Selasa" },
-  { id: 15, absentNo: 15, name: "Farhan Ramadhan", gender: "L", piketDay: "Rabu" },
-  { id: 16, absentNo: 16, name: "Gita Gutawa", gender: "P", piketDay: "Rabu" },
-  { id: 17, absentNo: 17, name: "Hadi Kurniawan", gender: "L", piketDay: "Kamis" },
-  { id: 18, absentNo: 18, name: "Indah Permata", gender: "P", piketDay: "Kamis" },
-  { id: 19, absentNo: 19, name: "Joko Widodo", gender: "L", piketDay: "Jumat" },
-  { id: 20, absentNo: 20, name: "Kiki Amalia", gender: "P", piketDay: "Jumat" },
-  { id: 21, absentNo: 21, name: "Larasati Putri", gender: "P", piketDay: "Senin" },
-  { id: 22, absentNo: 22, name: "M. Naufal", gender: "L", piketDay: "Senin" },
-  { id: 23, absentNo: 23, name: "Mitha Lestari", gender: "P", piketDay: "Selasa" },
-  { id: 24, absentNo: 24, name: "Oki Setiana", gender: "P", piketDay: "Selasa" },
-  { id: 25, absentNo: 25, name: "Putri Ayu", gender: "P", piketDay: "Rabu" },
-  { id: 26, absentNo: 26, name: "Qori Sandioriva", gender: "P", piketDay: "Rabu" },
-  { id: 27, absentNo: 27, name: "Raditya Dika", gender: "L", piketDay: "Kamis" },
-  { id: 28, absentNo: 28, name: "Rian Hidayat", gender: "L", piketDay: "Kamis" },
-  { id: 29, absentNo: 29, name: "Rizky Febian", gender: "L", piketDay: "Jumat" },
-  { id: 30, absentNo: 30, name: "Salsa Bila", gender: "P", piketDay: "Jumat" },
-  { id: 31, absentNo: 31, name: "Tari Lestari", gender: "P", piketDay: "Senin" },
-  { id: 32, absentNo: 32, name: "Taufik Hidayat", gender: "L", piketDay: "Selasa" },
-  { id: 33, absentNo: 33, name: "Utama Putra", gender: "L", piketDay: "Rabu" },
-  { id: 34, absentNo: 34, name: "Vina Panduwinata", gender: "P", piketDay: "Kamis" },
-  { id: 35, absentNo: 35, name: "Wahyu Hidayat", gender: "L", piketDay: "Jumat" },
-  { id: 36, absentNo: 36, name: "Zahra Amelia", gender: "P", piketDay: "Senin" },
+  { id: 1, absentNo: 1, name: "Faris", gender: "L", piketDay: "Senin" },
+  { id: 2, absentNo: 2, name: "Fardhan", gender: "L", piketDay: "Senin" },
+  { id: 3, absentNo: 3, name: "Diana", gender: "P", piketDay: "Selasa" },
+  { id: 4, absentNo: 4, name: "Queen", gender: "P", piketDay: "Selasa" },
+  { id: 5, absentNo: 5, name: "Caca", gender: "P", piketDay: "Rabu" },
+  { id: 6, absentNo: 6, name: "Velia", gender: "P", piketDay: "Rabu" },
+  { id: 7, absentNo: 7, name: "Selly", gender: "P", piketDay: "Kamis" },
+  { id: 8, absentNo: 8, name: "Rini", gender: "P", piketDay: "Kamis" },
+  { id: 9, absentNo: 9, name: "Cahya", gender: "L", piketDay: "Jumat" },
+  { id: 10, absentNo: 10, name: "Nadin", gender: "P", piketDay: "Jumat" },
+  { id: 11, absentNo: 11, name: "Arya", gender: "L", piketDay: "Senin" },
+  { id: 12, absentNo: 12, name: "Faza", gender: "L", piketDay: "Senin" },
+  { id: 13, absentNo: 13, name: "Vita", gender: "P", piketDay: "Selasa" },
+  { id: 14, absentNo: 14, name: "Luna", gender: "P", piketDay: "Selasa" },
+  { id: 15, absentNo: 15, name: "Vico", gender: "L", piketDay: "Rabu" },
+  { id: 16, absentNo: 16, name: "Richard", gender: "L", piketDay: "Rabu" },
+  { id: 17, absentNo: 17, name: "Vina", gender: "P", piketDay: "Kamis" },
+  { id: 18, absentNo: 18, name: "Safa", gender: "P", piketDay: "Kamis" },
+  { id: 19, absentNo: 19, name: "Dewa", gender: "L", piketDay: "Jumat" },
+  { id: 20, absentNo: 20, name: "Tia", gender: "P", piketDay: "Jumat" },
+  { id: 21, absentNo: 21, name: "Arqa", gender: "L", piketDay: "Senin" },
+  { id: 22, absentNo: 22, name: "Galih", gender: "L", piketDay: "Senin" },
+  { id: 23, absentNo: 23, name: "Alit", gender: "L", piketDay: "Selasa" },
+  { id: 24, absentNo: 24, name: "Aden", gender: "L", piketDay: "Selasa" },
+  { id: 25, absentNo: 25, name: "Aim", gender: "L", piketDay: "Rabu" },
+  { id: 26, absentNo: 26, name: "Areng", gender: "L", piketDay: "Rabu" },
+  { id: 27, absentNo: 27, name: "Riegan", gender: "L", piketDay: "Kamis" },
+  { id: 28, absentNo: 28, name: "Vanno", gender: "L", piketDay: "Kamis" },
+  { id: 29, absentNo: 29, name: "R. Ajeng", gender: "P", piketDay: "Jumat" },
+  { id: 30, absentNo: 30, name: "Cinta", gender: "P", piketDay: "Jumat" },
+  { id: 31, absentNo: 31, name: "Kevin", gender: "L", piketDay: "Senin" },
+  { id: 32, absentNo: 32, name: "Ersha", gender: "P", piketDay: "Selasa" },
+  { id: 33, absentNo: 33, name: "Khaira", gender: "P", piketDay: "Rabu" },
+  { id: 34, absentNo: 34, name: "Sila", gender: "P", piketDay: "Kamis" },
+  { id: 35, absentNo: 35, name: "Gusta", gender: "L", piketDay: "Jumat" },
+  { id: 36, absentNo: 36, name: "Aldaz", gender: "L", piketDay: "Senin" },
 ];
 
 // Extract first name only for compact seat display
@@ -82,11 +82,11 @@ export default function SeatingChart() {
   }
 
   const rows: RowConfig[] = [
-    { rowNum: 1, desks: [{ deskNum: 1, seats: [0, 1] }, { deskNum: 2, seats: [2, 3] }, { deskNum: 3, seats: [4, 5] }, { deskNum: 4, seats: [6, 7] }] },
-    { rowNum: 2, desks: [{ deskNum: 5, seats: [8, 9] }, { deskNum: 6, seats: [10, 11] }, { deskNum: 7, seats: [12, 13] }, { deskNum: 8, seats: [14, 15] }] },
-    { rowNum: 3, desks: [{ deskNum: 9, seats: [16, 17] }, { deskNum: 10, seats: [18, 19] }, { deskNum: 11, seats: [20, 21] }, { deskNum: 12, seats: [22, 23] }] },
-    { rowNum: 4, desks: [{ deskNum: 13, seats: [24, 25] }, { deskNum: 14, seats: [26, 27] }, { deskNum: 15, seats: [28, 29] }, { deskNum: 16, seats: [30, 31] }] },
-    { rowNum: 5, isBackRow: true, desks: [{ deskNum: 17, seats: [32, 33] }, { deskNum: 18, seats: [34, 35] }] },
+    { rowNum: 1, desks: [{ deskNum: 1, seats: [0, 1] }, { deskNum: 5, seats: [8, 9] }, { deskNum: 10, seats: [18, 19] }, { deskNum: 15, seats: [28, 29] }] },
+    { rowNum: 2, desks: [{ deskNum: 2, seats: [2, 3] }, { deskNum: 6, seats: [10, 11] }, { deskNum: 11, seats: [20, 21] }, { deskNum: 16, seats: [30, 31] }] },
+    { rowNum: 3, desks: [{ deskNum: 3, seats: [4, 5] }, { deskNum: 7, seats: [12, 13] }, { deskNum: 12, seats: [22, 23] }, { deskNum: 17, seats: [32, 33] }] },
+    { rowNum: 4, desks: [{ deskNum: 4, seats: [6, 7] }, { deskNum: 8, seats: [14, 15] }, { deskNum: 13, seats: [24, 25] }, { deskNum: 18, seats: [34, 35] }] },
+    { rowNum: 5, isBackRow: true, desks: [{ deskNum: 9, seats: [16, 17] }, { deskNum: 14, seats: [26, 27] }] },
   ];
 
   return (
@@ -195,7 +195,7 @@ export default function SeatingChart() {
             <div className="mt-2 sm:mt-4">
               <div className="px-3 sm:px-5 py-1 sm:py-1.5 rounded-lg bg-amber-950 border border-amber-600/50 text-amber-200 text-[9px] sm:text-xs font-semibold flex items-center gap-1 shadow-sm">
                 <span className="material-symbols-outlined text-[13px] sm:text-[16px]">co_present</span>
-                Meja Guru
+                Guru • Alit
               </div>
             </div>
           </div>

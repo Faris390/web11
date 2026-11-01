@@ -42,7 +42,7 @@ const GridMotion = ({
           [data-grid-row] { animation-play-state: paused !important; }
         }
       `}</style>
-      <div className="absolute inset-[-22%] -rotate-6 scale-125">
+      <div className="absolute inset-[-22%] flex flex-col justify-center -rotate-6 scale-125">
         {rowItems.map((row, rowIndex) => (
           <div
             key={rowIndex}

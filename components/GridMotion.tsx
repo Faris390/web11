@@ -57,7 +57,7 @@ const GridMotion = ({
             {row.map((src, index) => (
               <div
                 key={`${src}-${index}`}
-                className="glass-panel h-[clamp(100px,18vw,220px)] w-[clamp(150px,25vw,320px)] shrink-0 overflow-hidden rounded-2xl border border-white/10"
+                className="h-[clamp(100px,18vw,220px)] w-[clamp(150px,25vw,320px)] shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-black/30"
               >
                 <img src={src} alt="" draggable={false} className="h-full w-full object-cover opacity-60 grayscale-[20%]" />
               </div>

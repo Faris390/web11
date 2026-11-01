@@ -193,7 +193,7 @@ export default function SeatingChart() {
         </div>
 
         {/* Visual Seating Layout Container (Direct Mobile Visibility - Ultra Fast Solid GPU Colors) */}
-        <div className="glass-panel rounded-2xl md:rounded-3xl p-2 sm:p-5 md:p-8 border border-white/15 relative w-full shadow-2xl overflow-hidden">
+        <div className="bg-[#14120e] rounded-2xl md:rounded-3xl p-2 sm:p-5 md:p-8 border border-white/15 relative w-full shadow-2xl overflow-hidden">
           {/* Top Classroom Front: Whiteboard & Teacher Desk */}
           <div className="w-full flex flex-col items-center mb-4 sm:mb-6 md:mb-8 pb-3 md:pb-6 border-b border-white/10 relative">
             <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-white/40 mb-1 md:mb-2 font-bold">
@@ -289,7 +289,7 @@ export default function SeatingChart() {
       {/* Student Detail Modal */}
       {selectedStudent && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="glass-panel border border-white/20 rounded-3xl p-6 max-w-md w-full shadow-2xl relative">
+          <div className="bg-[#1a1814] border border-white/20 rounded-3xl p-6 max-w-md w-full shadow-2xl relative">
             <GlassButton
               onClick={() => setSelectedStudent(null)}
               className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-sm transition-all"

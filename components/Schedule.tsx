@@ -216,11 +216,11 @@ const typeConfig: Record<TaskType, { label: string; color: string; bg: string; b
   },
   none: {
     label: "Tidak Ada Tugas",
-    color: "text-emerald-400/90",
-    bg: "bg-emerald-500/10 hover:bg-emerald-500/15",
-    border: "border-emerald-500/20",
-    glow: "shadow-[0_0_12px_rgba(16,185,129,0.1)]",
-    icon: "check_circle",
+    color: "text-slate-300",
+    bg: "bg-slate-500/10 hover:bg-slate-500/15",
+    border: "border-slate-400/25",
+    glow: "shadow-[0_0_12px_rgba(148,163,184,0.1)]",
+    icon: "remove_circle_outline",
   },
 };
 

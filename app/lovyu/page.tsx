@@ -552,12 +552,33 @@ export default function AdminDashboard() {
                 {rollingSeats ? "Mengacak posisi..." : "Acak Posisi Bangku"}
               </button>
               {seatingMessage && <p className="text-xs text-sky-200">{seatingMessage}</p>}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 pt-2">
-                {Array.from({ length: 18 }, (_, index) => (
-                  <div key={index} className="rounded-xl bg-black/30 border border-white/10 p-3">
-                    <p className="text-[10px] uppercase tracking-wider text-sky-300 mb-2">Meja {index + 1}</p>
-                    <p className="text-sm text-white font-semibold">{seatingStudents[index * 2] || "—"}</p>
-                    <p className="text-sm text-white/70">{seatingStudents[index * 2 + 1] || "—"}</p>
+              <div className="space-y-4 pt-2">
+                {[
+                  [1, 5, 10, 15],
+                  [2, 6, 11, 16],
+                  [3, 7, 12, 17],
+                  [4, 8, 13, 18],
+                  [9, 14],
+                ].map((row, rowIndex) => (
+                  <div key={rowIndex}>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-[10px] uppercase tracking-wider text-sky-300">
+                        Baris ke-{rowIndex + 1}{rowIndex === 4 ? " (Belakang)" : ""}
+                      </p>
+                      <p className="text-[10px] text-white/40">{row.length} meja</p>
+                    </div>
+                    <div className={`grid grid-cols-2 ${row.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-2 lg:w-1/2 lg:mx-auto"} gap-2`}>
+                      {row.map((deskNumber) => {
+                        const studentIndex = (deskNumber - 1) * 2;
+                        return (
+                          <div key={deskNumber} className="rounded-xl bg-black/30 border border-white/10 p-3">
+                            <p className="text-[10px] uppercase tracking-wider text-amber-300 mb-2">Meja {deskNumber}</p>
+                            <p className="text-sm text-white font-semibold">{seatingStudents[studentIndex] || "—"}</p>
+                            <p className="text-sm text-white/70">{seatingStudents[studentIndex + 1] || "—"}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 ))}
               </div>

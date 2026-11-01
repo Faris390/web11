@@ -120,7 +120,7 @@ export default function LoginPage() {
                                         fontFamily="var(--font-syne), sans-serif"
                                     >
                                         <textPath href="#adminCirclePath" startOffset="0%">
-                                            XI-FARSENA
+                                            -•-ADMIN.ACCESS-•-XI.FARSENA•--
                                         </textPath>
                                     </text>
                                 </svg>

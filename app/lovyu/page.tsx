@@ -17,6 +17,7 @@ export default function AdminDashboard() {
   const [assignment, setAssignment] = useState({ subjectId: "", title: "", type: "tugas", details: "", dueDate: "" });
   const [assignmentMessage, setAssignmentMessage] = useState("");
   const [savingAssignment, setSavingAssignment] = useState(false);
+  const [editingAssignmentId, setEditingAssignmentId] = useState<string | null>(null);
   const [assignments, setAssignments] = useState<Array<{ id: string; subject: string; title: string; type: string; details: string; due_date: string | null }>>([]);
   const [rollingSeats, setRollingSeats] = useState(false);
   const [seatingMessage, setSeatingMessage] = useState("");
@@ -67,20 +68,51 @@ export default function AdminDashboard() {
     setAssignmentMessage("");
     try {
       const response = await fetch("/api/assignments", {
-        method: "POST",
+        method: editingAssignmentId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(assignment),
+        body: JSON.stringify(editingAssignmentId ? { ...assignment, id: editingAssignmentId } : assignment),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Tugas gagal disimpan.");
       setAssignment({ subjectId: "", title: "", type: "tugas", details: "", dueDate: "" });
-      setAssignmentMessage("Tugas berhasil disimpan.");
+      setEditingAssignmentId(null);
+      setAssignmentMessage(editingAssignmentId ? "Tugas berhasil diubah." : "Tugas berhasil disimpan.");
       loadAssignments();
     } catch (error) {
       setAssignmentMessage(error instanceof Error ? error.message : "Tugas gagal disimpan.");
     } finally {
       setSavingAssignment(false);
     }
+  };
+
+  const startEditingAssignment = (item: typeof assignments[number]) => {
+    const subject = subjects.find((entry) => entry.name === item.subject);
+    setAssignment({
+      subjectId: subject?.id || "",
+      title: item.title,
+      type: item.type,
+      details: item.details,
+      dueDate: item.due_date ? item.due_date.slice(0, 10) : "",
+    });
+    setEditingAssignmentId(item.id);
+    setAssignmentMessage("");
+    document.getElementById("assignment-form")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const deleteAssignment = async (id: string) => {
+    if (!window.confirm("Hapus tugas ini?")) return;
+    const response = await fetch(`/api/assignments?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+    const data = await response.json();
+    if (!response.ok) {
+      setAssignmentMessage(data.error || "Tugas gagal dihapus.");
+      return;
+    }
+    if (editingAssignmentId === id) {
+      setEditingAssignmentId(null);
+      setAssignment({ subjectId: "", title: "", type: "tugas", details: "", dueDate: "" });
+    }
+    setAssignmentMessage("Tugas berhasil dihapus.");
+    loadAssignments();
   };
 
   const rollSeats = async () => {
@@ -439,7 +471,7 @@ export default function AdminDashboard() {
                   Muat Mata Pelajaran
                 </button>
               )}
-              <form onSubmit={saveAssignment} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <form id="assignment-form" onSubmit={saveAssignment} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <label className="space-y-1.5 text-xs text-white/70">Mata pelajaran
                 <select required value={assignment.subjectId} onChange={(e) => setAssignment({ ...assignment, subjectId: e.target.value })} className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white">
                   <option value="">Pilih mata pelajaran</option>
@@ -456,8 +488,16 @@ export default function AdminDashboard() {
                 <label className="md:col-span-2 space-y-1.5 text-xs text-white/70">Detail tugas
                 <textarea required placeholder="Tulis instruksi, halaman, atau keterangan tugas..." value={assignment.details} onChange={(e) => setAssignment({ ...assignment, details: e.target.value })} className="w-full md:col-span-2 min-h-28 bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white placeholder-white/40" /></label>
                 <button type="submit" disabled={savingAssignment} className="md:col-span-2 py-3 rounded-xl bg-amber-500 text-black font-bold text-sm disabled:opacity-50">
-                  {savingAssignment ? "Menyimpan..." : "Simpan Tugas"}
+                  {savingAssignment ? "Menyimpan..." : editingAssignmentId ? "Simpan Perubahan" : "Simpan Tugas"}
                 </button>
+                {editingAssignmentId && (
+                  <button type="button" onClick={() => {
+                    setEditingAssignmentId(null);
+                    setAssignment({ subjectId: "", title: "", type: "tugas", details: "", dueDate: "" });
+                  }} className="md:col-span-2 py-2 rounded-xl border border-white/15 text-white/70 text-sm">
+                    Batal Edit
+                  </button>
+                )}
               </form>
               {assignmentMessage && <p className="text-xs text-amber-200">{assignmentMessage}</p>}
               <div className="pt-5 mt-2 border-t border-white/10">
@@ -472,6 +512,10 @@ export default function AdminDashboard() {
                         </div>
                         <p className="text-xs text-white/60 mt-1">{item.details}</p>
                         {item.due_date && <p className="text-[11px] text-white/40 mt-2">Batas: {item.due_date}</p>}
+                        <div className="flex gap-2 mt-3">
+                          <button type="button" onClick={() => startEditingAssignment(item)} className="px-3 py-1.5 rounded-lg bg-sky-400/10 border border-sky-400/25 text-xs text-sky-200">Edit</button>
+                          <button type="button" onClick={() => deleteAssignment(item.id)} className="px-3 py-1.5 rounded-lg bg-rose-400/10 border border-rose-400/25 text-xs text-rose-200">Hapus</button>
+                        </div>
                       </div>
                     ))}
                   </div>

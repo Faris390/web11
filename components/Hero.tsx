@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
+import GridMotion from "@/components/GridMotion";
 
 const words = [
   "F1 Students!!",
@@ -56,20 +57,13 @@ export default function Hero() {
       id="home"
       className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden py-16 px-4"
     >
-      {/* 1. Hero Dedicated Bright Wallpaper (bg1.jpeg) */}
-      <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden transform-gpu">
-        <Image
-          src="/bg1.jpeg"
-          alt="Hero Background"
-          fill
-          priority
-          quality={85}
-          sizes="100vw"
-          className="object-cover object-center opacity-90 brightness-95 saturate-110 pointer-events-none transform-gpu"
-        />
-        {/* Soft Vignette Overlay for Crisp Readability & Seamless Transition to Body */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 via-70% to-[#12110e]" />
-      </div>
+      <GridMotion
+        className="z-0 pointer-events-none"
+        items={["/bg1.jpeg", "/logo.jpeg", "/jadwal.jpeg", "/herobg.jpeg", "/kbendahara.jpeg", "/ketua.jpeg", "/kwakil.jpeg"]}
+        rows={4}
+        speed={18}
+        gap={14}
+      />
 
       {/* 3. Main Hero Content with entrance animations */}
       <div className="z-10 text-center flex flex-col items-center gap-5 max-w-4xl pt-16 pb-8 px-4 sm:px-10 transform-gpu">
@@ -101,7 +95,7 @@ export default function Hero() {
               fontFamily="var(--font-syne), sans-serif"
             >
               <textPath href="#circlePath" startOffset="0%">
-                XI-FARSENA
+                -•-farsena.smanda-•-farsena.smanda•--
               </textPath>
             </text>
           </svg>

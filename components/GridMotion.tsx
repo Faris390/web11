@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-
 type GridMotionProps = {
   items: string[];
   rows?: number;
@@ -17,48 +15,44 @@ const GridMotion = ({
   gap = 14,
   className = "",
 }: GridMotionProps) => {
-  const rootRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-    const rowElements = Array.from(root.querySelectorAll<HTMLElement>("[data-grid-row]"));
-    let frame = 0;
-    let last = performance.now();
-    let offset = rowElements.map((_, index) => index * 120);
-
-    const animate = (now: number) => {
-      const delta = Math.min(50, now - last);
-      last = now;
-      rowElements.forEach((row, index) => {
-        const direction = index % 2 === 0 ? -1 : 1;
-        offset[index] += direction * speed * delta / 1000;
-        const width = row.scrollWidth / 2;
-        if (width > 0) offset[index] = direction < 0
-          ? ((offset[index] % width) + width) % width - width
-          : -(((offset[index] % width) + width) % width);
-        row.style.transform = `translate3d(${offset[index]}px, 0, 0)`;
-      });
-      frame = requestAnimationFrame(animate);
-    };
-
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
-  }, [speed]);
-
   const rowItems = Array.from({ length: rows }, (_, row) =>
     Array.from({ length: Math.max(8, items.length * 2) }, (_, index) => items[(row * 2 + index) % items.length])
   );
 
   return (
-    <div ref={rootRef} className={`absolute inset-0 overflow-hidden ${className}`} aria-hidden="true">
+    <div
+      className={`absolute inset-0 overflow-hidden ${className}`}
+      aria-hidden="true"
+      style={{ "--grid-motion-speed": `${Math.max(1, speed)}s` } as React.CSSProperties}
+    >
+      <style>{`
+        @keyframes grid-motion-left {
+          from { transform: translate3d(-50%, 0, 0); }
+          to { transform: translate3d(0, 0, 0); }
+        }
+        @keyframes grid-motion-right {
+          from { transform: translate3d(0, 0, 0); }
+          to { transform: translate3d(-50%, 0, 0); }
+        }
+        [data-grid-row] {
+          backface-visibility: hidden;
+          will-change: transform;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [data-grid-row] { animation-play-state: paused !important; }
+        }
+      `}</style>
       <div className="absolute inset-[-22%] -rotate-6 scale-125">
         {rowItems.map((row, rowIndex) => (
           <div
             key={rowIndex}
             className="relative flex w-max"
             data-grid-row
-            style={{ gap, marginTop: rowIndex === 0 ? 0 : gap }}
+            style={{
+              gap,
+              marginTop: rowIndex === 0 ? 0 : gap,
+              animation: `${rowIndex % 2 === 0 ? "grid-motion-left" : "grid-motion-right"} var(--grid-motion-speed) linear infinite`,
+            }}
           >
             {row.map((src, index) => (
               <div

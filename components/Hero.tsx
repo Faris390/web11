@@ -79,7 +79,7 @@ export default function Hero() {
             }`}
         >
           {/* Glow aura behind logo */}
-          <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-amber-500/25 via-primary/20 to-amber-300/15 blur-xl sm:blur-2xl animate-pulse pointer-events-none transform-gpu" />
+          <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-amber-500/25 via-primary/20 to-amber-300/15 blur-xl sm:blur-2xl pointer-events-none transform-gpu" />
 
           {/* Circular Text SVG orbiting the logo */}
           <svg
@@ -101,7 +101,7 @@ export default function Hero() {
               fontFamily="var(--font-syne), sans-serif"
             >
               <textPath href="#circlePath" startOffset="0%">
-                -•-farsena.smanda-•-farsena.smanda•--
+                XI-FARSENA
               </textPath>
             </text>
           </svg>
@@ -147,7 +147,7 @@ export default function Hero() {
           <p className="font-headline-sm text-lg sm:text-2xl text-surface-bright/90 min-h-[32px] drop-shadow-md font-semibold tracking-wide">
             {text}
           </p>
-          <span className="w-1 h-6 md:h-7 bg-amber-400 ml-1.5 animate-pulse shadow-[0_0_8px_#f59e0b]" />
+          <span className="w-1 h-6 md:h-7 bg-amber-400 ml-1.5 shadow-[0_0_8px_#f59e0b]" />
         </div>
 
         {/* CTA Button */}

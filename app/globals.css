@@ -97,7 +97,7 @@ body {
   transform: translateZ(30px);
 }
 
-/* Cosmic Orbit & Comet Animations */
+/* Decorative logo animations */
 @keyframes orbit-cw {
   from {
     transform: rotate(0deg);
@@ -138,20 +138,6 @@ body {
   }
 }
 
-@keyframes logo-pulse {
-
-  0%,
-  100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 25px rgba(212, 163, 115, 0.6));
-  }
-
-  50% {
-    transform: scale(1.06);
-    filter: drop-shadow(0 0 45px rgba(212, 163, 115, 0.9));
-  }
-}
-
 .animate-orbit-cw {
   animation: orbit-cw 12s linear infinite;
 }
@@ -162,10 +148,6 @@ body {
 
 .animate-comet {
   animation: comet-fall 3.5s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
-}
-
-.animate-logo-pulse {
-  animation: logo-pulse 3s ease-in-out infinite;
 }
 
 /* Org Chart Custom Styling */

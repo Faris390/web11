@@ -35,7 +35,6 @@ const orgMembers: OrgMember[] = [
   {
     id: "ketua",
     name: "Panji A.R",
-    className: "XII-A1",
     instagram: "panjiathallah_",
     role: "Ketua Kelas",
     image: "/ketua.jpeg",
@@ -49,7 +48,6 @@ const orgMembers: OrgMember[] = [
   {
     id: "waka",
     name: "Novim Adi P.",
-    className: "XI-A4",
     instagram: "v3mm_",
     role: "Wakil Ketua",
     image: "/kwakil.jpeg",
@@ -63,7 +61,6 @@ const orgMembers: OrgMember[] = [
   {
     id: "sek1",
     name: "Aisyah Azzahra",
-    className: "XI-F1",
     instagram: "aisyahazzahra",
     role: "Sekretaris I",
     image: "/ksekretaris.jpeg",
@@ -78,7 +75,6 @@ const orgMembers: OrgMember[] = [
   {
     id: "sek2",
     name: "Mitha Lestari",
-    className: "XI-F1",
     instagram: "mithalestari",
     role: "Sekretaris II",
     image: "/ksekretaris2.jpeg",
@@ -93,7 +89,6 @@ const orgMembers: OrgMember[] = [
   {
     id: "bend1",
     name: "Amanda Severina",
-    className: "XI-F1",
     instagram: "amandaseverina",
     role: "Bendahara I",
     image: "/kbendahara.jpeg",
@@ -108,7 +103,6 @@ const orgMembers: OrgMember[] = [
   {
     id: "bend2",
     name: "Larasati Putri",
-    className: "XI-F1",
     instagram: "larasatiputri",
     role: "Bendahara II",
     image: "/kbendahara2.jpeg",
@@ -242,7 +236,7 @@ export default function ClassStructure() {
             <div className="flex items-center justify-center gap-3 mb-5">
               <div className="h-px w-8 sm:w-16 bg-gradient-to-r from-transparent to-emerald-400/40" />
               <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-emerald-300/90 bg-emerald-400/10 px-3.5 py-1 rounded-full border border-emerald-400/25 flex items-center gap-1.5 shadow-[0_0_12px_rgba(16,185,129,0.15)]">
-                <span className="material-symbols-outlined text-[13px] animate-pulse text-emerald-400">tune</span>
+                <span className="material-symbols-outlined text-[13px] text-emerald-400">tune</span>
                 <span>Sekretaris &amp; Bendahara</span>
               </span>
               <div className="h-px w-8 sm:w-16 bg-gradient-to-l from-transparent to-rose-400/40" />

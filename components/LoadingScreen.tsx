@@ -170,7 +170,7 @@ export default function LoadingScreen() {
         <div className="absolute inset-0 w-full h-full backdrop-blur-md bg-black/30 pointer-events-none z-[2]" />
 
         {/* Radial Ambient Glow - Warm Gold / Amber */}
-        <div className="absolute w-[550px] h-[550px] rounded-full bg-gradient-to-tr from-amber-600/25 via-yellow-600/20 to-amber-400/20 blur-[110px] pointer-events-none z-[3] animate-pulse" />
+        <div className="absolute w-[550px] h-[550px] rounded-full bg-gradient-to-tr from-amber-600/25 via-yellow-600/20 to-amber-400/20 blur-[110px] pointer-events-none z-[3]" />
 
         {/* Teks FARSENA!2026 (Warna utama Putih, overlay bayangan 3D Amber) */}
         <div
@@ -196,7 +196,7 @@ export default function LoadingScreen() {
       <div className="z-[99999] pointer-events-none" style={getLogoStyle()}>
         <div className="relative">
           {/* Glow aura behind logo */}
-          <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-amber-500/30 via-yellow-500/20 to-amber-300/20 blur-2xl animate-pulse pointer-events-none" />
+          <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-amber-500/30 via-yellow-500/20 to-amber-300/20 blur-2xl pointer-events-none" />
 
           {/* Spinning dashed ring */}
           <div

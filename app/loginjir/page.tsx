@@ -98,7 +98,7 @@ export default function LoginPage() {
                         <div className="flex flex-col items-center mb-6">
                             <div className="relative mb-3">
                                 {/* Glow aura behind logo */}
-                                <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-amber-500/30 to-amber-300/20 blur-xl animate-pulse pointer-events-none" />
+                                <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-amber-500/30 to-amber-300/20 blur-xl pointer-events-none" />
 
                                 {/* Orbiting Text Ring SVG */}
                                 <svg
@@ -120,7 +120,7 @@ export default function LoginPage() {
                                         fontFamily="var(--font-syne), sans-serif"
                                     >
                                         <textPath href="#adminCirclePath" startOffset="0%">
-                                            -•-ADMIN.ACCESS-•-XI.FARSENA•--
+                                            XI-FARSENA
                                         </textPath>
                                     </text>
                                 </svg>

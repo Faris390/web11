@@ -204,7 +204,7 @@ export default function AdminDashboard() {
               }`}
           >
             {/* Glow aura behind logo */}
-            <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-amber-500/25 via-primary/20 to-amber-300/15 blur-2xl animate-pulse pointer-events-none" />
+            <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-amber-500/25 via-primary/20 to-amber-300/15 blur-2xl pointer-events-none" />
 
             {/* Circular Text SVG orbiting the logo */}
             <svg
@@ -225,7 +225,6 @@ export default function AdminDashboard() {
                 fontFamily="var(--font-syne), sans-serif"
               >
                 <textPath href="#circlePath" startOffset="0%">
-                  -•-farsena.smanda-•-farsena.smanda•--
                 </textPath>
               </text>
             </svg>
@@ -275,20 +274,6 @@ export default function AdminDashboard() {
           >
             <button
               onClick={() => {
-                setActiveSection("overview");
-                document.getElementById("dashboard-content")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-2 border ${activeSection === "overview"
-                ? "bg-amber-500 text-black border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.4)]"
-                : "glass-panel text-white border-white/20 hover:border-amber-400/50"
-                }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">grid_view</span>
-              <span>Overview</span>
-            </button>
-
-            <button
-              onClick={() => {
                 setActiveSection("schedule");
                 document.getElementById("dashboard-content")?.scrollIntoView({ behavior: "smooth" });
               }}
@@ -299,20 +284,6 @@ export default function AdminDashboard() {
             >
               <span className="material-symbols-outlined text-[18px]">calendar_month</span>
               <span>Tugas & Jadwal</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveSection("structure");
-                document.getElementById("dashboard-content")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-2 border ${activeSection === "structure"
-                ? "bg-amber-500 text-black border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.4)]"
-                : "glass-panel text-white border-white/20 hover:border-amber-400/50"
-                }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">account_tree</span>
-              <span>Struktur Kelas</span>
             </button>
 
             <button
@@ -394,8 +365,8 @@ export default function AdminDashboard() {
                   <p className="text-xs text-white/60 mt-0.5">Ringkasan status modul website XI-FARSENA</p>
                 </div>
                 <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-mono font-bold flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  SYSTEM ONLINE
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  AKTIF
                 </span>
               </div>
 
@@ -516,7 +487,6 @@ export default function AdminDashboard() {
                   <span className="material-symbols-outlined text-purple-400">account_tree</span>
                   Modul Struktur Pengurus Kelas
                 </h3>
-                <span className="text-xs text-purple-300/80 font-mono">Modul Ready</span>
               </div>
               <p className="text-xs text-white/70">
                 Fitur pengelolaan nama pengurus, jabatan, akun Instagram, dan foto profil.
@@ -535,7 +505,6 @@ export default function AdminDashboard() {
                   <span className="material-symbols-outlined text-sky-400">chair</span>
                   Modul Denah Tempat Duduk
                 </h3>
-                <span className="text-xs text-sky-300/80 font-mono">Modul Ready</span>
               </div>
               <p className="text-xs text-white/70">
                 Layout denah tempat duduk 36 siswa dengan pencarian cepat dan mode visualisasi meja.

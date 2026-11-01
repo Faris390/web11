@@ -187,7 +187,7 @@ export default function ClassStructure() {
             <div className="w-0.5 h-6 sm:h-8 bg-gradient-to-b from-amber-400 via-amber-400/80 to-purple-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
             {/* Pulsing junction node */}
             <div className="relative -my-1 z-10 flex items-center justify-center">
-              <div className="w-4 h-4 rounded-full bg-amber-400/40 animate-ping" />
+              <div className="w-4 h-4 rounded-full bg-amber-400/40" />
               <div className="absolute w-2.5 h-2.5 rounded-full bg-amber-400 border border-white shadow-[0_0_12px_rgba(245,158,11,1)]" />
             </div>
             {/* Horizontal branch bar: left-[25%] to right-[25%] */}
@@ -223,7 +223,7 @@ export default function ClassStructure() {
             <div className="w-0.5 h-5 sm:h-7 bg-gradient-to-b from-amber-400/80 via-emerald-400/80 to-teal-400 shadow-[0_0_8px_rgba(245,158,11,0.4)]" />
             {/* Glowing pulsing junction node */}
             <div className="relative -my-1 z-10 flex items-center justify-center">
-              <div className="w-4 h-4 rounded-full bg-emerald-400/40 animate-ping" />
+              <div className="w-4 h-4 rounded-full bg-emerald-400/40" />
               <div className="absolute w-2.5 h-2.5 rounded-full bg-emerald-400 border border-white shadow-[0_0_12px_rgba(16,185,129,1)]" />
             </div>
           </div>
@@ -292,11 +292,11 @@ function MemberCard({ member, isApex = false, isCompact = false }: MemberCardPro
       >
         {/* Outer Rotating Ring */}
         <div
-          className={`absolute -inset-1 rounded-full bg-gradient-to-tr ${member.accentColor} opacity-50 group-hover:opacity-100 transition-opacity duration-500 animate-spin [animation-duration:10s] pointer-events-none`}
+          className={`absolute -inset-1 rounded-full bg-gradient-to-tr ${member.accentColor} opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}
         />
         {/* Inner Counter-Rotating Ring */}
         <div
-          className={`absolute -inset-0.5 rounded-full bg-gradient-to-bl ${member.accentColor} opacity-0 group-hover:opacity-75 transition-opacity duration-500 animate-spin [animation-duration:14s] [animation-direction:reverse] pointer-events-none`}
+          className={`absolute -inset-0.5 rounded-full bg-gradient-to-bl ${member.accentColor} opacity-0 group-hover:opacity-75 transition-opacity duration-500 pointer-events-none`}
         />
         <div className="w-full h-full rounded-full overflow-hidden relative z-10 bg-[#191815] flex items-center justify-center">
           {!imgError ? (

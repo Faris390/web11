@@ -578,9 +578,15 @@ export default function AdminDashboard() {
                                 key={row}
                                 aria-pressed={checked}
                                 onMouseDown={(event) => event.preventDefault()}
-                                onClick={() => setSeatingPreferences((current) => current.map((item, itemIndex) => itemIndex === index
-                                  ? { ...item, allowedRows: checked ? item.allowedRows.filter((value) => value !== row) : [...item.allowedRows, row].sort() }
-                                  : item))}
+                                onFocus={(event) => event.currentTarget.blur()}
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  const scrollY = window.scrollY;
+                                  setSeatingPreferences((current) => current.map((item, itemIndex) => itemIndex === index
+                                    ? { ...item, allowedRows: checked ? item.allowedRows.filter((value) => value !== row) : [...item.allowedRows, row].sort() }
+                                    : item));
+                                  requestAnimationFrame(() => window.scrollTo({ top: scrollY, behavior: "auto" }));
+                                }}
                                 className={`cursor-pointer px-3 py-1.5 rounded-lg border text-xs ${checked ? "bg-sky-400/20 border-sky-300/50 text-sky-200" : "bg-white/5 border-white/10 text-white/50"}`}
                               >
                                 Baris {row}

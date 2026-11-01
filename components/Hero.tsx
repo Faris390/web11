@@ -61,7 +61,7 @@ export default function Hero() {
         className="z-0 pointer-events-none"
         items={["/bg1.jpeg", "/logo.jpeg", "/jadwal.jpeg", "/herobg.jpeg", "/kbendahara.jpeg", "/ketua.jpeg", "/kwakil.jpeg"]}
         rows={4}
-        speed={18}
+        speed={36}
         gap={14}
       />
 

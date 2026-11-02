@@ -343,7 +343,7 @@ export default function Schedule() {
           className={`flex flex-col items-center gap-4 mb-5 transition-all duration-800 ease-out delay-100 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             }`}
         >
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 sm:gap-2 w-full max-w-3xl p-1.5 rounded-2xl bg-black/60 border border-white/15 shadow-xl">
+          <div className="flex flex-nowrap gap-1.5 sm:gap-2 w-full max-w-3xl overflow-x-auto p-1.5 rounded-2xl bg-black/60 border border-white/15 shadow-xl">
             {scheduleData.map((day, index) => {
               const isToday = todayIndex === index;
               const isActive = activeDay === index;
@@ -351,7 +351,7 @@ export default function Schedule() {
                 <GlassButton
                   key={day.day}
                   onClick={() => setActiveDay(index)}
-                  className={`relative w-full justify-center px-2 sm:px-4 py-2.5 rounded-xl font-label-md text-xs sm:text-sm font-bold transition-all duration-200 flex items-center gap-1.5 ${isActive
+                  className={`relative flex-none justify-center px-3 sm:px-4 py-2.5 rounded-xl font-label-md text-xs sm:text-sm font-bold transition-all duration-200 flex items-center gap-1.5 ${isActive
                       ? "bg-primary text-white shadow-[0_0_15px_rgba(212,163,115,0.4)]"
                       : "text-white/60 hover:text-white hover:bg-white/10"
                     }`}

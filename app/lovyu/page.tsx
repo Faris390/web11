@@ -1,6 +1,5 @@
 "use client";
 
-import GlassButton from "@/components/GlassButton";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,33 +11,18 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [activeSection, setActiveSection] = useState<"overview" | "schedule" | "structure" | "seating">("schedule");
-  const [role, setRole] = useState<string>("");
-  const [subjects, setSubjects] = useState<Array<{ id: string; name: string }>>([]);
-  const [assignment, setAssignment] = useState({ subjectId: "", title: "", type: "tugas", details: "", dueDate: "" });
-  const [assignmentMessage, setAssignmentMessage] = useState("");
-  const [savingAssignment, setSavingAssignment] = useState(false);
-  const [editingAssignmentId, setEditingAssignmentId] = useState<string | null>(null);
-  const [assignments, setAssignments] = useState<Array<{ id: string; subject: string; title: string; type: string; details: string; due_date: string | null }>>([]);
-  const [rollingSeats, setRollingSeats] = useState(false);
-  const [seatingMessage, setSeatingMessage] = useState("");
-  const [seatingStudents, setSeatingStudents] = useState<string[]>([]);
-  const [seatingPreferences, setSeatingPreferences] = useState<Array<{ pairKey: string; studentA: string; studentB: string; allowedRows: number[] }>>([]);
+  const [activeSection, setActiveSection] = useState<"overview" | "schedule" | "structure" | "seating">("overview");
 
   useEffect(() => {
-    fetch("/api/auth/me")
-      .then(async (response) => {
-        if (!response.ok) throw new Error("unauthorized");
-        const data = await response.json();
-        setRole(data.role);
-        setIsAuthorized(true);
-        loadSubjects();
-        loadAssignments();
-        loadSeating();
-      })
-      .catch(() => {
+    // Cek apakah ada token login
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      // Kalau gak ada token, tendang ke halaman login portal
       router.push('/loginjir');
-      });
+    } else {
+      setIsAuthorized(true);
+    }
   }, [router]);
 
   useEffect(() => {
@@ -46,116 +30,9 @@ export default function AdminDashboard() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/loginjir");
-  };
-
-  const loadSubjects = async () => {
-    const response = await fetch("/api/subjects");
-    const data = await response.json();
-    if (response.ok) setSubjects(data.subjects);
-  };
-
-  const loadAssignments = async () => {
-    const response = await fetch("/api/assignments");
-    const data = await response.json();
-    if (response.ok) setAssignments(data.assignments);
-  };
-
-  const saveAssignment = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setSavingAssignment(true);
-    setAssignmentMessage("");
-    try {
-      const response = await fetch("/api/assignments", {
-        method: editingAssignmentId ? "PUT" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editingAssignmentId ? { ...assignment, id: editingAssignmentId } : assignment),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Tugas gagal disimpan.");
-      setAssignment({ subjectId: "", title: "", type: "tugas", details: "", dueDate: "" });
-      setEditingAssignmentId(null);
-      setAssignmentMessage(editingAssignmentId ? "Tugas berhasil diubah." : "Tugas berhasil disimpan.");
-      loadAssignments();
-    } catch (error) {
-      setAssignmentMessage(error instanceof Error ? error.message : "Tugas gagal disimpan.");
-    } finally {
-      setSavingAssignment(false);
-    }
-  };
-
-  const startEditingAssignment = (item: typeof assignments[number]) => {
-    const subject = subjects.find((entry) => entry.name === item.subject);
-    setAssignment({
-      subjectId: subject?.id || "",
-      title: item.title,
-      type: item.type,
-      details: item.details,
-      dueDate: item.due_date ? item.due_date.slice(0, 10) : "",
-    });
-    setEditingAssignmentId(item.id);
-    setAssignmentMessage("");
-    document.getElementById("assignment-form")?.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
-
-  const deleteAssignment = async (id: string) => {
-    if (!window.confirm("Hapus tugas ini?")) return;
-    const response = await fetch(`/api/assignments?id=${encodeURIComponent(id)}`, { method: "DELETE" });
-    const data = await response.json();
-    if (!response.ok) {
-      setAssignmentMessage(data.error || "Tugas gagal dihapus.");
-      return;
-    }
-    if (editingAssignmentId === id) {
-      setEditingAssignmentId(null);
-      setAssignment({ subjectId: "", title: "", type: "tugas", details: "", dueDate: "" });
-    }
-    setAssignmentMessage("Tugas berhasil dihapus.");
-    loadAssignments();
-  };
-
-  const rollSeats = async () => {
-    setRollingSeats(true);
-    setSeatingMessage("");
-    try {
-      const response = await fetch("/api/seating", { method: "POST" });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Pengacakan gagal.");
-      setSeatingStudents(data.students || []);
-      setSeatingMessage("Posisi pasangan berhasil diacak.");
-    } catch (error) {
-      setSeatingMessage(error instanceof Error ? error.message : "Pengacakan gagal.");
-    } finally {
-      setRollingSeats(false);
-    }
-  };
-
-  const loadSeating = async () => {
-    const response = await fetch("/api/seating", { cache: "no-store" });
-    const data = await response.json();
-    if (response.ok) setSeatingStudents(data.students || []);
-  };
-
-  useEffect(() => {
-    if (role !== "rishyt") return;
-    fetch("/api/seating/preferences")
-      .then(async (response) => {
-        const data = await response.json();
-        if (response.ok) setSeatingPreferences(data.pairs || []);
-      })
-      .catch(() => undefined);
-  }, [role]);
-
-  const saveSeatingPreferences = async () => {
-    const response = await fetch("/api/seating/preferences", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pairs: seatingPreferences }),
-    });
-    const data = await response.json();
-    setSeatingMessage(response.ok ? "Aturan kemungkinan berhasil disimpan." : (data.error || "Aturan gagal disimpan."));
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    router.push('/loginjir');
   };
 
   // Tampilkan loading screen glassmorphism sebelum status auth selesai dicek
@@ -205,13 +82,13 @@ export default function AdminDashboard() {
             <span className="material-symbols-outlined text-[16px]">home</span>
             <span className="hidden sm:inline">Halaman Utama</span>
           </Link>
-          <GlassButton
+          <button
             onClick={handleLogout}
             className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-red-500/20 border border-red-500/40 text-red-300 hover:bg-red-500/30 hover:border-red-400/60 transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <span className="material-symbols-outlined text-[16px]">logout</span>
             <span className="hidden sm:inline">Logout</span>
-          </GlassButton>
+          </button>
         </div>
       </nav>
 
@@ -237,7 +114,7 @@ export default function AdminDashboard() {
               }`}
           >
             {/* Glow aura behind logo */}
-            <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-amber-500/25 via-primary/20 to-amber-300/15 blur-2xl pointer-events-none" />
+            <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-amber-500/25 via-primary/20 to-amber-300/15 blur-2xl animate-pulse pointer-events-none" />
 
             {/* Circular Text SVG orbiting the logo */}
             <svg
@@ -258,6 +135,7 @@ export default function AdminDashboard() {
                 fontFamily="var(--font-syne), sans-serif"
               >
                 <textPath href="#circlePath" startOffset="0%">
+                  -•-farsena.smanda-•-farsena.smanda•--
                 </textPath>
               </text>
             </svg>
@@ -297,7 +175,7 @@ export default function AdminDashboard() {
             className={`text-base sm:text-lg text-white/80 max-w-xl transition-all duration-1000 ease-out delay-300 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               }`}
           >
-            Kelola informasi kelas dari satu tempat.
+            Pusat Kontrol & Pengelolaan Informasi XI-Farsena.
           </p>
 
           {/* Quick Action Navigation Buttons */}
@@ -305,7 +183,21 @@ export default function AdminDashboard() {
             className={`flex flex-wrap justify-center gap-3 mt-2 transition-all duration-1000 ease-out delay-500 ${mounted ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-6 scale-95"
               }`}
           >
-            <GlassButton
+            <button
+              onClick={() => {
+                setActiveSection("overview");
+                document.getElementById("dashboard-content")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-2 border ${activeSection === "overview"
+                ? "bg-amber-500 text-black border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.4)]"
+                : "glass-panel text-white border-white/20 hover:border-amber-400/50"
+                }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">grid_view</span>
+              <span>Overview</span>
+            </button>
+
+            <button
               onClick={() => {
                 setActiveSection("schedule");
                 document.getElementById("dashboard-content")?.scrollIntoView({ behavior: "smooth" });
@@ -316,10 +208,24 @@ export default function AdminDashboard() {
                 }`}
             >
               <span className="material-symbols-outlined text-[18px]">calendar_month</span>
-              <span>Tugas & Jadwal</span>
-            </GlassButton>
+              <span>Kelola Jadwal</span>
+            </button>
 
-            <GlassButton
+            <button
+              onClick={() => {
+                setActiveSection("structure");
+                document.getElementById("dashboard-content")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-2 border ${activeSection === "structure"
+                ? "bg-amber-500 text-black border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.4)]"
+                : "glass-panel text-white border-white/20 hover:border-amber-400/50"
+                }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">account_tree</span>
+              <span>Struktur Kelas</span>
+            </button>
+
+            <button
               onClick={() => {
                 setActiveSection("seating");
                 document.getElementById("dashboard-content")?.scrollIntoView({ behavior: "smooth" });
@@ -331,7 +237,7 @@ export default function AdminDashboard() {
             >
               <span className="material-symbols-outlined text-[18px]">chair</span>
               <span>Denah Duduk</span>
-            </GlassButton>
+            </button>
           </div>
         </div>
       </section>
@@ -398,8 +304,8 @@ export default function AdminDashboard() {
                   <p className="text-xs text-white/60 mt-0.5">Ringkasan status modul website XI-FARSENA</p>
                 </div>
                 <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-mono font-bold flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                  AKTIF
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  SYSTEM ONLINE
                 </span>
               </div>
 
@@ -412,12 +318,12 @@ export default function AdminDashboard() {
                   <p className="text-xs text-white/70 mb-4">
                     Jadwal Senin hingga Jumat telah terkonfigurasi lengkap dengan piket kebersihan kelas.
                   </p>
-                  <GlassButton
+                  <button
                     onClick={() => setActiveSection("schedule")}
                     className="w-full py-2 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold hover:bg-amber-500/30 transition-all"
                   >
                     Buka Pengaturan Jadwal
-                  </GlassButton>
+                  </button>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-400/40 transition-all">
@@ -428,12 +334,12 @@ export default function AdminDashboard() {
                   <p className="text-xs text-white/70 mb-4">
                     Susunan pengurus kelas (Pembina, Ketua, Wakil, Sekretaris & Bendahara) aktif.
                   </p>
-                  <GlassButton
+                  <button
                     onClick={() => setActiveSection("structure")}
                     className="w-full py-2 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-400/30 text-xs font-bold hover:bg-purple-500/30 transition-all"
                   >
                     Buka Pengaturan Pengurus
-                  </GlassButton>
+                  </button>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-sky-400/40 transition-all">
@@ -444,83 +350,32 @@ export default function AdminDashboard() {
                   <p className="text-xs text-white/70 mb-4">
                     Denah interaktif posisi duduk siswa kelas XI-FARSENA lengkap dengan pencarian nama.
                   </p>
-                  <GlassButton
+                  <button
                     onClick={() => setActiveSection("seating")}
                     className="w-full py-2 rounded-xl bg-sky-500/20 text-sky-300 border border-sky-400/30 text-xs font-bold hover:bg-sky-500/30 transition-all"
                   >
                     Buka Pengaturan Denah
-                  </GlassButton>
+                  </button>
                 </div>
               </div>
             </div>
           )}
 
           {activeSection === "schedule" && (
-            <div className="space-y-5">
-              <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
                   <span className="material-symbols-outlined text-amber-400">calendar_month</span>
-                  Tambah Tugas
+                  Modul Manajemen Jadwal Pelajaran
                 </h3>
-                <span className="shrink-0 px-2.5 py-1 rounded-full bg-amber-400/10 text-xs text-amber-200 border border-amber-400/20">
-                  {role === "rishyt" ? "Akses penuh" : "Pengurus kelas"}
-                </span>
+                <span className="text-xs text-amber-300/80 font-mono">Modul Ready</span>
               </div>
-              <p className="text-sm text-white/70">Isi form berikut. Tugas akan langsung muncul di jadwal kelas setelah disimpan.</p>
-              {subjects.length === 0 && (
-                <GlassButton onClick={loadSubjects} className="px-4 py-2 rounded-xl bg-amber-500/20 text-amber-200 border border-amber-400/30 text-xs font-bold">
-                  Muat Mata Pelajaran
-                </GlassButton>
-              )}
-              <form id="assignment-form" onSubmit={saveAssignment} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <label className="space-y-1.5 text-xs text-white/70">Mata pelajaran
-                <select required value={assignment.subjectId} onChange={(e) => setAssignment({ ...assignment, subjectId: e.target.value })} className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white">
-                  <option value="">Pilih mata pelajaran</option>
-                  {subjects.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
-                </select></label>
-                <label className="space-y-1.5 text-xs text-white/70">Judul tugas
-                <input required placeholder="Contoh: Latihan halaman 20" value={assignment.title} onChange={(e) => setAssignment({ ...assignment, title: e.target.value })} className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white placeholder-white/40" /></label>
-                <label className="space-y-1.5 text-xs text-white/70">Jenis tugas
-                <select value={assignment.type} onChange={(e) => setAssignment({ ...assignment, type: e.target.value })} className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white">
-                  <option value="tugas">Tugas</option><option value="berkelompok">Berkelompok</option><option value="presentasi">Presentasi</option><option value="ulangan">Ulangan</option>
-                </select></label>
-                <label className="space-y-1.5 text-xs text-white/70">Batas pengumpulan (opsional)
-                <input type="date" value={assignment.dueDate} onChange={(e) => setAssignment({ ...assignment, dueDate: e.target.value })} className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white" /></label>
-                <label className="md:col-span-2 space-y-1.5 text-xs text-white/70">Detail tugas
-                <textarea required placeholder="Tulis instruksi, halaman, atau keterangan tugas..." value={assignment.details} onChange={(e) => setAssignment({ ...assignment, details: e.target.value })} className="w-full md:col-span-2 min-h-28 bg-black/40 border border-white/15 rounded-xl px-3 py-3 text-sm text-white placeholder-white/40" /></label>
-                <GlassButton type="submit" disabled={savingAssignment} className="md:col-span-2 py-3 rounded-xl bg-amber-500 text-black font-bold text-sm disabled:opacity-50">
-                  {savingAssignment ? "Menyimpan..." : editingAssignmentId ? "Simpan Perubahan" : "Simpan Tugas"}
-                </GlassButton>
-                {editingAssignmentId && (
-                  <GlassButton type="button" onClick={() => {
-                    setEditingAssignmentId(null);
-                    setAssignment({ subjectId: "", title: "", type: "tugas", details: "", dueDate: "" });
-                  }} className="md:col-span-2 py-2 rounded-xl border border-white/15 text-white/70 text-sm">
-                    Batal Edit
-                  </GlassButton>
-                )}
-              </form>
-              {assignmentMessage && <p className="text-xs text-amber-200">{assignmentMessage}</p>}
-              <div className="pt-5 mt-2 border-t border-white/10">
-                <h4 className="font-bold text-white mb-3">Tugas tersimpan</h4>
-                {assignments.length === 0 ? <p className="text-xs text-white/50">Belum ada tugas yang ditambahkan.</p> : (
-                  <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
-                    {assignments.map((item) => (
-                      <div key={item.id} className="p-3 rounded-xl bg-white/5 border border-white/10">
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <span className="font-semibold text-sm text-white">{item.subject} · {item.title}</span>
-                          <span className="text-[10px] uppercase text-amber-200 bg-amber-400/10 border border-amber-400/20 rounded px-2 py-1">{item.type}</span>
-                        </div>
-                        <p className="text-xs text-white/60 mt-1">{item.details}</p>
-                        {item.due_date && <p className="text-[11px] text-white/40 mt-2">Batas: {item.due_date}</p>}
-                        <div className="flex gap-2 mt-3">
-                          <GlassButton type="button" onClick={() => startEditingAssignment(item)} className="px-3 py-1.5 rounded-lg bg-sky-400/10 border border-sky-400/25 text-xs text-sky-200">Edit</GlassButton>
-                          <GlassButton type="button" onClick={() => deleteAssignment(item.id)} className="px-3 py-1.5 rounded-lg bg-rose-400/10 border border-rose-400/25 text-xs text-rose-200">Hapus</GlassButton>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <p className="text-xs text-white/70">
+                Fitur pengelolaan jadwal pelajaran dan jadwal piket harian kelas XI-FARSENA.
+              </p>
+              <div className="p-4 rounded-xl bg-amber-400/10 border border-amber-400/20 text-xs text-amber-200 flex items-center gap-3">
+                <span className="material-symbols-outlined text-xl">info</span>
+                <span>Jadwal aktif ditampilkan secara dinamis di halaman depan berdasarkan hari saat ini.</span>
               </div>
             </div>
           )}
@@ -532,6 +387,7 @@ export default function AdminDashboard() {
                   <span className="material-symbols-outlined text-purple-400">account_tree</span>
                   Modul Struktur Pengurus Kelas
                 </h3>
+                <span className="text-xs text-purple-300/80 font-mono">Modul Ready</span>
               </div>
               <p className="text-xs text-white/70">
                 Fitur pengelolaan nama pengurus, jabatan, akun Instagram, dan foto profil.
@@ -550,93 +406,15 @@ export default function AdminDashboard() {
                   <span className="material-symbols-outlined text-sky-400">chair</span>
                   Modul Denah Tempat Duduk
                 </h3>
+                <span className="text-xs text-sky-300/80 font-mono">Modul Ready</span>
               </div>
               <p className="text-xs text-white/70">
                 Layout denah tempat duduk 36 siswa dengan pencarian cepat dan mode visualisasi meja.
               </p>
               <div className="p-4 rounded-xl bg-sky-400/10 border border-sky-400/20 text-xs text-sky-200 flex items-center gap-3">
                 <span className="material-symbols-outlined text-xl">event_seat</span>
-                <span>Acak posisi 18 pasangan bangku. Dua siswa dalam satu pasangan tetap bersama.</span>
+                <span>Posisi meja terdistribusi rapi dalam bentuk 2 kolom meja ganda.</span>
               </div>
-              <GlassButton
-                onClick={rollSeats}
-                disabled={rollingSeats}
-                className="w-full py-3 rounded-xl bg-sky-500 text-black font-bold text-sm disabled:opacity-50"
-              >
-                {rollingSeats ? "Mengacak posisi..." : "Acak Posisi Bangku"}
-              </GlassButton>
-              {seatingMessage && <p className="text-xs text-sky-200">{seatingMessage}</p>}
-              <div className="space-y-4 pt-2">
-                {[
-                  [1, 5, 10, 15],
-                  [2, 6, 11, 16],
-                  [3, 7, 12, 17],
-                  [4, 8, 13, 18],
-                  [9, 14],
-                ].map((row, rowIndex) => (
-                  <div key={rowIndex}>
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-[10px] uppercase tracking-wider text-sky-300">
-                        Baris ke-{rowIndex + 1}{rowIndex === 4 ? " (Belakang)" : ""}
-                      </p>
-                      <p className="text-[10px] text-white/40">{row.length} meja</p>
-                    </div>
-                    <div className={`grid grid-cols-2 ${row.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-2 lg:w-1/2 lg:mx-auto"} gap-2`}>
-                      {row.map((deskNumber) => {
-                        const studentIndex = (deskNumber - 1) * 2;
-                        return (
-                          <div key={deskNumber} className="rounded-xl bg-black/30 border border-white/10 p-3">
-                            <p className="text-[10px] uppercase tracking-wider text-amber-300 mb-2">Meja {deskNumber}</p>
-                            <p className="text-sm text-white font-semibold">{seatingStudents[studentIndex] || "—"}</p>
-                            <p className="text-sm text-white/70">{seatingStudents[studentIndex + 1] || "—"}</p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {role === "rishyt" && (
-                <div className="mt-5 pt-5 border-t border-white/10">
-                  <h4 className="font-bold text-white">Atur kemungkinan baris</h4>
-                  <p className="text-xs text-white/60 mt-1 mb-3">Pilih baris yang boleh ditempati setiap pasangan saat diacak.</p>
-                  <div className="space-y-2 max-h-96 overflow-y-auto">
-                    {seatingPreferences.map((pair, index) => (
-                      <div key={pair.pairKey} className="rounded-xl bg-black/30 border border-white/10 p-3">
-                        <p className="text-sm text-white font-semibold mb-2">{pair.studentA} &amp; {pair.studentB}</p>
-                        <div className="flex flex-wrap gap-2">
-                          {[1, 2, 3, 4, 5].map((row) => {
-                            const checked = pair.allowedRows.includes(row);
-                            return (
-                              <GlassButton
-                                type="button"
-                                key={row}
-                                aria-pressed={checked}
-                                onMouseDown={(event) => event.preventDefault()}
-                                onFocus={(event) => event.currentTarget.blur()}
-                                onClick={(event) => {
-                                  event.preventDefault();
-                                  const scrollY = window.scrollY;
-                                  setSeatingPreferences((current) => current.map((item, itemIndex) => itemIndex === index
-                                    ? { ...item, allowedRows: checked ? item.allowedRows.filter((value) => value !== row) : [...item.allowedRows, row].sort() }
-                                    : item));
-                                  requestAnimationFrame(() => window.scrollTo({ top: scrollY, behavior: "auto" }));
-                                }}
-                                className={`cursor-pointer px-3 py-1.5 rounded-lg border text-xs ${checked ? "bg-sky-400/20 border-sky-300/50 text-sky-200" : "bg-white/5 border-white/10 text-white/50"}`}
-                              >
-                                Baris {row}
-                              </GlassButton>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <GlassButton onClick={saveSeatingPreferences} className="w-full mt-4 py-3 rounded-xl bg-purple-500 text-white font-bold text-sm">
-                    Simpan Aturan Baris
-                  </GlassButton>
-                </div>
-              )}
             </div>
           )}
         </div>

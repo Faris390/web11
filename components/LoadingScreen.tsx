@@ -176,12 +176,12 @@ export default function LoadingScreen() {
         <div
           className="relative z-10 text-center px-4"
           style={{
-            marginTop: "150px",
+            marginTop: "120px",
             opacity: 0,
             animation: "y2kFadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards",
           }}
         >
-          <h1 className="font-extrabold text-5xl sm:text-7xl md:text-8xl tracking-tight y2k-text-shadow flex items-center justify-center flex-wrap gap-x-2 font-['Syne'],sans-serif">
+          <h1 className="font-extrabold text-3xl sm:text-6xl md:text-8xl tracking-tight y2k-text-shadow flex items-center justify-center flex-wrap gap-x-2 font-['Syne'],sans-serif">
             <span className="text-white-main">
               FARSENA!
             </span>

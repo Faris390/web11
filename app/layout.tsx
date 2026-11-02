@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Syne } from "next/font/google";
 import "./globals.css";
 import ShaderBackground from "@/components/ShaderBackground";
@@ -20,6 +20,13 @@ const syne = Syne({
 export const metadata: Metadata = {
   title: "XI-Farsena | SMAN 1 Pandaan",
   description: "Official class website for XI-Farsena SMAN 1 Pandaan - Creative thinkers and future leaders.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#12110e",
 };
 
 export default function RootLayout({

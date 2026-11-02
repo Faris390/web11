@@ -4,12 +4,17 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  width: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
   background-color: #12110e;
   color: #fcf9f0;
   overflow-x: hidden;
+  width: 100%;
+  position: relative;
 }
 
 .glass-panel {
@@ -29,9 +34,11 @@ body {
   transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.2, 1, 0.3, 1);
 }
 
-.hover-lift:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(212, 163, 115, 0.25);
+@media (hover: hover) {
+  .hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(212, 163, 115, 0.25);
+  }
 }
 
 /* Ticker Animation */
@@ -150,7 +157,7 @@ body {
 
 /* Org Chart Custom Styling */
 .org-card {
-  @apply rounded-2xl p-4 sm:p-6 flex flex-col items-center text-center transition-all duration-300 cursor-pointer;
+  @apply rounded-2xl p-3 sm:p-5 flex flex-col items-center text-center transition-all duration-300;
   width: 100%;
 }
 

@@ -310,26 +310,26 @@ export default function Schedule() {
     <section
       ref={sectionRef}
       id="schedule"
-      className="relative w-full py-16 sm:py-24 px-3 sm:px-6 overflow-hidden flex flex-col justify-center"
+      className="relative w-full py-12 sm:py-20 px-3 sm:px-6 overflow-hidden flex flex-col justify-center"
     >
 
       <div className="max-w-6xl mx-auto relative z-10 w-full">
         {/* Compact Section Header */}
         <div
-          className={`text-center mb-6 transition-all duration-800 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          className={`text-center mb-5 sm:mb-6 transition-all duration-800 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             }`}
         >
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 border border-primary/30 mb-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 border border-primary/30 mb-2 sm:mb-3">
             <span className="material-symbols-outlined text-primary text-sm">
               event_repeat
             </span>
-            <span className="font-label-sm text-[11px] text-primary font-bold tracking-[0.2em] uppercase">
+            <span className="font-label-sm text-[10px] sm:text-[11px] text-primary font-bold tracking-[0.2em] uppercase">
               JADWAL KELAS F1
             </span>
           </div>
 
           <h2
-            className="font-headline-md text-3xl sm:text-4xl text-surface-bright font-extrabold tracking-tight"
+            className="font-headline-md text-2xl sm:text-4xl text-surface-bright font-extrabold tracking-tight"
             style={{
               textShadow: "0 0 30px rgba(212,163,115,0.4), 0 3px 10px rgba(0,0,0,0.9)",
             }}
@@ -340,10 +340,10 @@ export default function Schedule() {
 
         {/* Day Tabs */}
         <div
-          className={`flex flex-col items-center gap-4 mb-5 transition-all duration-800 ease-out delay-100 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          className={`flex flex-col items-center gap-3 sm:gap-4 mb-5 transition-all duration-800 ease-out delay-100 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             }`}
         >
-          <div className="flex flex-nowrap gap-1.5 sm:gap-2 w-full max-w-3xl overflow-x-auto p-1.5 rounded-2xl bg-black/60 border border-white/15 shadow-xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex flex-nowrap gap-1 sm:gap-2 w-full max-w-3xl overflow-x-auto p-1 sm:p-1.5 rounded-2xl bg-black/60 border border-white/15 shadow-xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {scheduleData.map((day, index) => {
               const isToday = todayIndex === index;
               const isActive = activeDay === index;
@@ -351,13 +351,16 @@ export default function Schedule() {
                 <GlassButton
                   key={day.day}
                   onClick={() => setActiveDay(index)}
-                  className={`relative flex-1 min-w-[72px] sm:min-w-0 justify-center px-2 sm:px-4 py-2.5 rounded-xl font-label-md text-xs sm:text-sm font-bold transition-all duration-200 flex items-center gap-1.5 ${isActive
+                  className={`relative flex-1 min-w-[54px] sm:min-w-0 justify-center px-1.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-label-md text-xs sm:text-sm font-bold transition-all duration-200 flex items-center gap-1 sm:gap-1.5 ${isActive
                       ? "bg-primary text-white shadow-[0_0_15px_rgba(212,163,115,0.4)]"
                       : "text-white/60 hover:text-white hover:bg-white/10"
                     }`}
                 >
                   <span className="sm:hidden">{day.dayShort}</span>
                   <span className="hidden sm:inline">{day.day}</span>
+                  {isToday && (
+                    <span className="inline-block sm:hidden w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  )}
                   {isToday && (
                     <span className="hidden sm:inline text-[9px] uppercase font-mono px-1 py-0.2 rounded bg-amber-400/25 text-amber-300 border border-amber-400/30">
                       Hari Ini
@@ -516,7 +519,7 @@ export default function Schedule() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-1.5">
+              <div className="grid grid-cols-2 lg:grid-cols-1 gap-1.5 sm:gap-2">
                 {currentSchedule.piket.map((nama, idx) => (
                   <div
                     key={idx}

@@ -310,16 +310,16 @@ export default function Schedule() {
     <section
       ref={sectionRef}
       id="schedule"
-      className="relative w-full py-12 sm:py-18 px-3 sm:px-6 overflow-hidden flex flex-col justify-center"
+      className="relative w-full py-16 sm:py-24 px-3 sm:px-6 overflow-hidden flex flex-col justify-center"
     >
 
-      <div className="max-w-5xl mx-auto relative z-10 w-full">
+      <div className="max-w-6xl mx-auto relative z-10 w-full">
         {/* Compact Section Header */}
         <div
           className={`text-center mb-6 transition-all duration-800 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             }`}
         >
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 border border-primary/30 mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 border border-primary/30 mb-3">
             <span className="material-symbols-outlined text-primary text-sm">
               event_repeat
             </span>
@@ -329,7 +329,7 @@ export default function Schedule() {
           </div>
 
           <h2
-            className="font-headline-md text-2xl sm:text-4xl text-surface-bright font-extrabold tracking-tight"
+            className="font-headline-md text-3xl sm:text-4xl text-surface-bright font-extrabold tracking-tight"
             style={{
               textShadow: "0 0 30px rgba(212,163,115,0.4), 0 3px 10px rgba(0,0,0,0.9)",
             }}
@@ -343,7 +343,7 @@ export default function Schedule() {
           className={`flex flex-col items-center gap-4 mb-5 transition-all duration-800 ease-out delay-100 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             }`}
         >
-          <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 p-1 rounded-xl bg-black/60 border border-white/15 shadow-xl">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 sm:gap-2 w-full max-w-3xl p-1.5 rounded-2xl bg-black/60 border border-white/15 shadow-xl">
             {scheduleData.map((day, index) => {
               const isToday = todayIndex === index;
               const isActive = activeDay === index;
@@ -351,7 +351,7 @@ export default function Schedule() {
                 <GlassButton
                   key={day.day}
                   onClick={() => setActiveDay(index)}
-                  className={`relative px-3 sm:px-5 py-2 rounded-lg font-label-md text-xs sm:text-sm font-bold transition-all duration-200 flex items-center gap-1.5 ${isActive
+                  className={`relative w-full justify-center px-2 sm:px-4 py-2.5 rounded-xl font-label-md text-xs sm:text-sm font-bold transition-all duration-200 flex items-center gap-1.5 ${isActive
                       ? "bg-primary text-white shadow-[0_0_15px_rgba(212,163,115,0.4)]"
                       : "text-white/60 hover:text-white hover:bg-white/10"
                     }`}
@@ -368,10 +368,10 @@ export default function Schedule() {
           </div>
 
           {/* Filter Pills */}
-          <div className="flex flex-wrap justify-center gap-1.5">
+          <div className="flex flex-wrap justify-center gap-2 max-w-4xl">
             <GlassButton
               onClick={() => setSelectedFilter("all")}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-mono transition-all border ${selectedFilter === "all"
+              className={`px-3 py-1.5 rounded-lg text-[11px] font-mono transition-all border ${selectedFilter === "all"
                   ? "bg-white/20 border-white/40 text-white font-bold"
                   : "bg-black/40 border-white/10 text-white/50 hover:text-white"
                 }`}
@@ -385,7 +385,7 @@ export default function Schedule() {
                 <GlassButton
                   key={key}
                   onClick={() => setSelectedFilter(key)}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-mono transition-all border flex items-center gap-1 ${selectedFilter === key
+                  className={`px-3 py-1.5 rounded-lg text-[11px] font-mono transition-all border flex items-center gap-1 ${selectedFilter === key
                       ? `${config.bg} ${config.border} ${config.color} font-bold`
                       : "bg-black/40 border-white/10 text-white/40 hover:text-white"
                     }`}
@@ -400,13 +400,13 @@ export default function Schedule() {
 
         {/* Main Content Layout: Tasks Card + Piket Card */}
         <div
-          className={`grid grid-cols-1 lg:grid-cols-4 gap-4 transition-all duration-800 ease-out delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          className={`grid grid-cols-1 lg:grid-cols-[minmax(0,3fr)_minmax(250px,1fr)] gap-5 transition-all duration-800 ease-out delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             }`}
         >
           {/* Main Tasks List (3 cols on LG) */}
-          <div className="lg:col-span-3 glass-panel rounded-2xl p-4 sm:p-6 border border-white/15 shadow-xl flex flex-col gap-3">
+          <div className="glass-panel rounded-2xl p-4 sm:p-6 border border-white/15 shadow-xl flex flex-col gap-4">
             {/* Header info */}
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+            <div className="flex items-center justify-between gap-3 pb-3 border-b border-white/10">
               <h3 className="font-headline-sm text-lg sm:text-xl font-bold text-surface-bright flex items-center gap-2">
                 <span className="material-symbols-outlined text-amber-400 text-lg">
                   calendar_today
@@ -453,7 +453,7 @@ export default function Schedule() {
                   return (
                     <div
                       key={task.id}
-                      className={`p-3 sm:p-4 rounded-xl border transition-all ${config.bg} ${config.border} flex flex-col sm:flex-row sm:items-center justify-between gap-2.5`}
+                      className={`p-3.5 sm:p-4 rounded-xl border transition-all ${config.bg} ${config.border} flex flex-col sm:flex-row sm:items-center justify-between gap-3`}
                     >
                       {/* Subject + Task + Teacher */}
                       <div className="flex items-start gap-3 flex-1">
@@ -473,7 +473,7 @@ export default function Schedule() {
                             </span>
                           </div>
 
-                          <p className="text-white/80 text-xs sm:text-sm mt-0.5 leading-snug">
+                          <p className="text-white/80 text-xs sm:text-sm mt-1 leading-relaxed">
                             {task.task}
                           </p>
 
@@ -481,7 +481,7 @@ export default function Schedule() {
                       </div>
 
                       {/* Time Badge */}
-                      <div className="flex-shrink-0 self-end sm:self-center">
+                      <div className="flex-shrink-0 self-start sm:self-center">
                         <span className="inline-flex items-center gap-1 text-xs font-mono text-white/70 bg-black/50 px-2.5 py-1 rounded-lg border border-white/10">
                           <span className="material-symbols-outlined text-xs text-amber-400">
                             schedule
@@ -497,7 +497,7 @@ export default function Schedule() {
           </div>
 
           {/* Piket Kebersihan Card (1 col on LG) */}
-          <div className="lg:col-span-1 glass-panel rounded-2xl p-4 sm:p-5 border border-amber-400/20 bg-amber-500/5 shadow-xl flex flex-col justify-between">
+          <div className="glass-panel rounded-2xl p-4 sm:p-5 border border-amber-400/20 bg-amber-500/5 shadow-xl flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-2 pb-3 mb-3 border-b border-white/10">
                 <div className="w-8 h-8 rounded-lg bg-amber-400/20 border border-amber-400/30 flex items-center justify-center">

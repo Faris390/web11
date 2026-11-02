@@ -343,7 +343,7 @@ export default function Schedule() {
           className={`flex flex-col items-center gap-4 mb-5 transition-all duration-800 ease-out delay-100 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             }`}
         >
-          <div className="flex flex-nowrap gap-1.5 sm:gap-2 w-full max-w-3xl overflow-x-auto p-1.5 rounded-2xl bg-black/60 border border-white/15 shadow-xl">
+          <div className="flex flex-nowrap gap-1.5 sm:gap-2 w-full max-w-3xl overflow-x-auto p-1.5 rounded-2xl bg-black/60 border border-white/15 shadow-xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {scheduleData.map((day, index) => {
               const isToday = todayIndex === index;
               const isActive = activeDay === index;
@@ -351,14 +351,15 @@ export default function Schedule() {
                 <GlassButton
                   key={day.day}
                   onClick={() => setActiveDay(index)}
-                  className={`relative flex-none justify-center px-3 sm:px-4 py-2.5 rounded-xl font-label-md text-xs sm:text-sm font-bold transition-all duration-200 flex items-center gap-1.5 ${isActive
+                  className={`relative flex-1 min-w-[72px] sm:min-w-0 justify-center px-2 sm:px-4 py-2.5 rounded-xl font-label-md text-xs sm:text-sm font-bold transition-all duration-200 flex items-center gap-1.5 ${isActive
                       ? "bg-primary text-white shadow-[0_0_15px_rgba(212,163,115,0.4)]"
                       : "text-white/60 hover:text-white hover:bg-white/10"
                     }`}
                 >
-                  <span>{day.day}</span>
+                  <span className="sm:hidden">{day.dayShort}</span>
+                  <span className="hidden sm:inline">{day.day}</span>
                   {isToday && (
-                    <span className="text-[9px] uppercase font-mono px-1 py-0.2 rounded bg-amber-400/25 text-amber-300 border border-amber-400/30">
+                    <span className="hidden sm:inline text-[9px] uppercase font-mono px-1 py-0.2 rounded bg-amber-400/25 text-amber-300 border border-amber-400/30">
                       Hari Ini
                     </span>
                   )}
@@ -368,10 +369,10 @@ export default function Schedule() {
           </div>
 
           {/* Filter Pills */}
-          <div className="flex flex-wrap justify-center gap-2 max-w-4xl">
+          <div className="flex flex-nowrap justify-start sm:justify-center gap-2 max-w-full overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <GlassButton
               onClick={() => setSelectedFilter("all")}
-              className={`px-3 py-1.5 rounded-lg text-[11px] font-mono transition-all border ${selectedFilter === "all"
+              className={`flex-none px-3 py-1.5 rounded-lg text-[11px] font-mono transition-all border ${selectedFilter === "all"
                   ? "bg-white/20 border-white/40 text-white font-bold"
                   : "bg-black/40 border-white/10 text-white/50 hover:text-white"
                 }`}
@@ -385,7 +386,7 @@ export default function Schedule() {
                 <GlassButton
                   key={key}
                   onClick={() => setSelectedFilter(key)}
-                  className={`px-3 py-1.5 rounded-lg text-[11px] font-mono transition-all border flex items-center gap-1 ${selectedFilter === key
+                  className={`flex-none px-3 py-1.5 rounded-lg text-[11px] font-mono transition-all border flex items-center gap-1 ${selectedFilter === key
                       ? `${config.bg} ${config.border} ${config.color} font-bold`
                       : "bg-black/40 border-white/10 text-white/40 hover:text-white"
                     }`}
@@ -515,7 +516,7 @@ export default function Schedule() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 lg:grid-cols-1 gap-1.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-1.5">
                 {currentSchedule.piket.map((nama, idx) => (
                   <div
                     key={idx}
